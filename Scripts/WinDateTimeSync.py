@@ -5,6 +5,13 @@ import sys
 import copy
 import time
 
+# Version info:
+__ScriptVersionNumber__ = {
+        "Major"     :   0,
+        "Minor"     :   3,
+        "Revision"  :   0
+    }
+
 DEBUG_SCRIPT = True
 
 WorldTimeApiUrl = "worldtimeapi.org"
