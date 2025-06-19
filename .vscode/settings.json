@@ -1,0 +1,24 @@
+{
+    "[powershell]": {
+        "debug.saveBeforeStart": "allEditorsInActiveGroup",
+        "editor.semanticHighlighting.enabled": "configuredByTheme",
+        "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?",
+        "files.encoding": "utf8",    // NOTE: In PowerShell the default is UTF-8
+        "files.eol": "\r\n"
+    },
+    "[python]": {
+        "files.encoding": "utf8",
+        "files.eol": "auto",
+        "files.autoGuessEncoding": true
+    },
+    "[markdown]": {
+        "editor.wordWrap": "on",
+        "editor.quickSuggestions": {
+            "comments": "on",
+            "strings": "on",
+            "other": "on"
+        },
+        "editor.suggest.preview": true,
+        "files.encoding": "utf8"
+    }
+}
