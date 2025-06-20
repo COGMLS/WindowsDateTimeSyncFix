@@ -8,16 +8,16 @@
 ## Implementations under development:
 
 - PowerShell command to change the system date and time
+- Add comments and documentation
+- Test PowerShell version before start script
+- Test python version before start the script
 
 ## Future Implementations:
 
 - Test for administrator rights
 - Script return codes
 - Main entry for python script
-- Test python version before start the script
-- Test PowerShell version before start script
 - Test Windows version before start script
-- Add comments and documentation
 
 ## Known Bugs:
 
