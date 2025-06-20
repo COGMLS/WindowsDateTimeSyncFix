@@ -23,6 +23,12 @@ This repository contain a [Docs](./Docs/) directory where the documentation is k
     <link rel="stylesheet" href="./CSS/ReleaseNotes.css">
 </head>
 <dl>
+    <!-- 0.4.0 (2025/06/20) -->
+    <dt><version-data>0.4.0</version-data> | Release Date: 2025/06/20</dt>
+    <dd>Added PowerShell script generation from Python processed data</dd>
+    <dd>Added PowerShell script calling from Python</dd>
+    <dd>Added python version test</dd>
+    <dd><strong>The script is not ready to be used yet.</strong> It only process the data and return to the console window</dd>
     <!-- 0.3.0 (2025/06/18) -->
     <dt><version-data>0.3.0</version-data> | Release Date: 2025/06/18</dt>
     <dd>Added date and time extraction in UTC format from json content</dd>
