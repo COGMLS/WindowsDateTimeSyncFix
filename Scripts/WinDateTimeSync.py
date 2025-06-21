@@ -22,13 +22,16 @@ if (sys.version_info.major < 3) or (sys.version_info.major >= 3 and sys.version_
     sys.exit(1) # Incompatible version
     pass
 
+#
+# Script global variables:
+#
+
 WorldTimeApiUrl = "worldtimeapi.org"
 UtcUrlPart = "/api/timezone/Etc/UTC"
-LocalUrl = "/api/timezone/America/Sao_Paulo"
 
-url = "worldtimeapi.org/api/timezone/America/Sao_Paulo"
-
-finalUrl = WorldTimeApiUrl + UtcUrlPart
+#
+# Script classes:
+#
 
 class HttpResponseData:
     """
