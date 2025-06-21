@@ -25,6 +25,8 @@
 
 | Bug ID | Details | Notes/Workaround | Status |
 | :----- | :-----: | :--------------: | -----: |
+| 1 | Print help get stuck on loop | N/A | **FIXED** |
+| 2 | Using `-test` parameter result in undeclared variable | N/A | **FIXED** |
 
 ## Deprecated Features:
 
