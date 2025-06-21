@@ -14,7 +14,43 @@ __ScriptVersionNumber__ = {
         "Revision"  :   0
     }
 
-DEBUG_SCRIPT = True
+# Debug Script mode:
+DEBUG_SCRIPT = False
+
+# Control Variables:
+bDebugScript = DEBUG_SCRIPT
+bExperimentalMode = False
+bIsHelpCli = False
+
+# Help command line:
+helpCmd = ["-help","-h","-?"]
+
+# Help CLI info:
+help_cli = [
+    "Windows Date Time Sync",
+    "\t-help -h -?          Access the command line help",
+    "\t-test                Use the script without apply modification on your system",
+    "\t-debug               Enable the script debug mode, showing processed data and status code",
+    "\t--experimental       Enable the script experimental features"
+]
+
+# Help arrays index:
+help_arrays = [help_cli]
+
+# Check for Debug parameter:
+if not bDebugScript:
+    for arg in sys.argv:
+        if arg.lower() == "--debugscript" or arg.lower() == "-debug":
+            bDebugScript = True
+            pass
+        if arg.lower() == "--experimental":
+            bExperimentalMode = True
+            pass
+        if arg.lower() == helpCmd[0] or arg.lower() == helpCmd[1] or arg.lower() == helpCmd[2]:
+            bIsHelpCli = True
+            pass
+        pass
+    pass
 
 # Verify Python version:
 if (sys.version_info.major < 3) or (sys.version_info.major >= 3 and sys.version_info.minor < 6):
