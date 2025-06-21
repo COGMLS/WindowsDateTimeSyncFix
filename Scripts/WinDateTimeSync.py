@@ -21,6 +21,7 @@ DEBUG_SCRIPT = False
 bDebugScript = DEBUG_SCRIPT
 bExperimentalMode = False
 bIsHelpCli = False
+bIsTestMode = False
 
 # Help command line:
 helpCmd = ["-help","-h","-?"]
@@ -48,6 +49,9 @@ if not bDebugScript:
             pass
         if arg.lower() == helpCmd[0] or arg.lower() == helpCmd[1] or arg.lower() == helpCmd[2]:
             bIsHelpCli = True
+            pass
+        if arg.lower() == "-test":
+            bTestScript = True
             pass
         pass
     pass
@@ -124,7 +128,66 @@ class HttpResponseData:
         
     def getResponseData(self) -> bytes:
         return self._response_data
-    
+
+#
+# Script functions:
+#
+
+# Script Presentation:
+# Function to present script's information to user, including version, release date.
+# Parameters:
+#   addLine: If TRUE, will add a line after the presentation
+def PrintScriptPresentation(addLine: bool = False) -> None:
+    global bExperimentalMode
+    presentation = f"Windows Date Time Sync - {__ScriptVersionNumber__['Major']}.{__ScriptVersionNumber__['Minor']}.{__ScriptVersionNumber__['Revision']}"
+    if bExperimentalMode:
+        presentation += " | EXPERIMENTAL MODE"
+        pass
+    print(presentation)
+    if addLine:
+        terminal_columns = os.get_terminal_size().columns
+        line = ""
+        i = 0
+        while i < terminal_columns:
+            line += '-'
+            i = i + 1
+            pass
+        print(line)
+        pass
+    pass
+
+# Print the help command, based on help array index:
+# Parameters:
+#   printHelpArr: Select the detailed help array information
+def PrintHelp(printHelpArr: int) -> None:
+    global help_arrays
+    if printHelpArr < 0 or printHelpArr >= len(help_arrays):
+        print(f"[ERROR]::PrintHelp method received an unrecognizable help array! | Argument value: {printHelpArr}")
+        pass
+    if printHelpArr == 0:
+        PrintScriptPresentation(True)
+        i = 0
+        iMax = len(helpCmd)
+        help_str = ""
+        while i < iMax:
+            if i + 1 < iMax:
+                help_str += f"{helpCmd[i]} "
+                pass
+            else:
+                help_str += f"{helpCmd[i]}"
+                pass
+            pass
+        help_str += "\tPrint the help information"
+        print(help_str)
+        pass
+    i = 0
+    iMax = len(help_arrays[printHelpArr])
+    while i < iMax:
+        print(help_arrays[printHelpArr][i])
+        i = i + 1
+        pass
+    pass
+
 def strncpy (string: str, start: int = 0, count: int = -1) -> str:
     """
     String N copy
