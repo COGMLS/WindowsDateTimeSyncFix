@@ -11,7 +11,7 @@ import tempfile
 __ScriptVersionNumber__ = {
         "Major"     :   0,
         "Minor"     :   5,
-        "Revision"  :   0
+        "Revision"  :   1
     }
 
 # Debug Script mode:
@@ -21,14 +21,14 @@ DEBUG_SCRIPT = False
 bDebugScript = DEBUG_SCRIPT
 bExperimentalMode = False
 bIsHelpCli = False
-bIsTestMode = False
+bIsTestScript = False
+bIsUnknownCli = False
 
 # Help command line:
 helpCmd = ["-help","-h","-?"]
 
 # Help CLI info:
 help_cli = [
-    "Windows Date Time Sync",
     "\t-help -h -?          Access the command line help",
     "\t-test                Use the script without apply modification on your system",
     "\t-debug               Enable the script debug mode, showing processed data and status code",
@@ -36,23 +36,21 @@ help_cli = [
 ]
 
 # Help arrays index:
-help_arrays = [help_cli]
+help_arrays = [helpCmd, help_cli]
 
-# Check for Debug parameter:
-if not bDebugScript:
-    for arg in sys.argv:
-        if arg.lower() == "--debugscript" or arg.lower() == "-debug":
-            bDebugScript = True
-            pass
-        if arg.lower() == "--experimental":
-            bExperimentalMode = True
-            pass
-        if arg.lower() == helpCmd[0] or arg.lower() == helpCmd[1] or arg.lower() == helpCmd[2]:
-            bIsHelpCli = True
-            pass
-        if arg.lower() == "-test":
-            bTestScript = True
-            pass
+# Check for debug, experimental and test parameters:
+for arg in sys.argv:
+    if arg.lower() == "--debugscript" or arg.lower() == "-debug":
+        bDebugScript = True
+        pass
+    if arg.lower() == "--experimental":
+        bExperimentalMode = True
+        pass
+    if arg.lower() == helpCmd[0] or arg.lower() == helpCmd[1] or arg.lower() == helpCmd[2]:
+        bIsHelpCli = True
+        pass
+    if arg.lower() == "-test":
+        bIsTestScript = True
         pass
     pass
 
@@ -176,6 +174,7 @@ def PrintHelp(printHelpArr: int) -> None:
             else:
                 help_str += f"{helpCmd[i]}"
                 pass
+            i = i + 1
             pass
         help_str += "\tPrint the help information"
         print(help_str)
@@ -305,7 +304,8 @@ def getDateTimeInfo(srvUrl: str, localUrl: str) -> HttpResponseData:
 if __name__ == "__main__":
     # Check for help command:
     if bIsHelpCli:
-        PrintHelp(0)
+        PrintScriptPresentation(True)
+        PrintHelp(1)
         sys.exit(0)
         pass
 
@@ -423,7 +423,7 @@ if __name__ == "__main__":
             print(pwshCmd)
             pass
         
-        if not bTestScript:
+        if not bIsTestScript:
             scriptReturn = os.system(pwshCmd)
             if bDebugScript:
                 print(f"PowerShell Return: {scriptReturn}")
