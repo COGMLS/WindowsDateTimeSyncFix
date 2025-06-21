@@ -6,6 +6,19 @@
     <link rel="stylesheet" href="./CSS/ReleaseNotes.css">
 </head>
 <dl>
+    <!-- 0.5.0 (2025/06/21) -->
+    <dt><version-data>0.5.0</version-data> | Release Date: 2025/06/21</dt>
+    <dd>Added main entry</dd>
+    <dd>Added script presentation</dd>
+    <dd>Move previous script data processing into main entry</dd>
+    <dd>Added exit with error codes</dd>
+    <dd>Added new comments</dd>
+    <dd>Added to execute PowerShell script only when is not in test mode</dd>
+    <dd>Added new methods</dd>
+    <dd>Added variable controls</dd>
+    <dd>Added help command line</dd>
+    <dd>Added cli test for debug and experimental options</dd>
+    <dd>Removed unused code</dd>
     <!-- 0.4.0 (2025/06/20) -->
     <dt><version-data>0.4.0</version-data> | Release Date: 2025/06/20</dt>
     <dd>Added PowerShell script generation from Python processed data</dd>

@@ -11,12 +11,14 @@
 - Add comments and documentation
 - Test PowerShell version before start script
 - Test python version before start the script
+- Experimental feature control
+- Command line options
+- Main entry for python script
+- Script return codes
 
 ## Future Implementations:
 
 - Test for administrator rights
-- Script return codes
-- Main entry for python script
 - Test Windows version before start script
 
 ## Known Bugs:
