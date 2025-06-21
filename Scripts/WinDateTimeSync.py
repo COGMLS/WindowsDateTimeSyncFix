@@ -10,7 +10,7 @@ import tempfile
 # Version info:
 __ScriptVersionNumber__ = {
         "Major"     :   0,
-        "Minor"     :   4,
+        "Minor"     :   5,
         "Revision"  :   0
     }
 
@@ -298,111 +298,143 @@ def getDateTimeInfo(srvUrl: str, localUrl: str) -> HttpResponseData:
     
     return respInfo
 
-i = 1
-iMax = 10
-successOp = False
-sleepTimer = 3
+#
+# Script main entry:
+#
 
-# The server has a difficulty to make the connection, probably will need multiple tries:
-while i <= iMax and successOp != True:
-    # Use the response data object to get the method's status and the server http code and response:
-    respData = getDateTimeInfo(WorldTimeApiUrl, UtcUrlPart)
-    if respData.getStatus() == 0:
-        print(f"Response at trying ({i}/{iMax})\nStatus: {respData.getStatus()} Reason: {respData.getReason()}")
-        successOp = True
-        data = respData.getResponseData()
-        if DEBUG_SCRIPT:
-            print(data)
+if __name__ == "__main__":
+    # Check for help command:
+    if bIsHelpCli:
+        PrintHelp(0)
+        sys.exit(0)
+        pass
+
+    # Show the script presentation and start the script components:
+
+    PrintScriptPresentation(True)
+
+    i = 1
+    iMax = 10
+    successOp = False
+    sleepTimer = 3
+
+    # The server has a difficulty to make the connection, probably will need multiple tries:
+    while i <= iMax and successOp != True:
+        # Use the response data object to get the method's status and the server http code and response:
+        respData = getDateTimeInfo(WorldTimeApiUrl, UtcUrlPart)
+        if respData.getStatus() == 0:
+            print(f"Response at trying ({i}/{iMax})\nStatus: {respData.getStatus()} Reason: {respData.getReason()}")
+            successOp = True
+            data = respData.getResponseData()
+            if bDebugScript:
+                print(data)
+                pass
+            break
             pass
-        break
+        else:
+            print(f"Retrying... ({i}/{iMax})\nStatus: {respData.getStatus()} Reason: {respData.getReason()}")
+            pass
+        i = i + 1
+        # Wait before another trying
+        time.sleep(sleepTimer)
+        pass
+
+    # Report the not successful operation:
+    if not successOp and respData.getStatus() != 5:
+        print("Fail to get the time information from server!")
+        print(f"Error: {respData.getHttpStatus()} | Reason: {respData.getReason()}")
+        sys.exit(4) # Fail to get server info, but successful processed the getDateTimeInfo method
+        pass
+
+    # On successful operation, proceed to response data conversion and time fix:
+    if successOp:
+        # Create a JSON object from server response
+        dtJson = json.loads(respData.getResponseData())
+
+        if bDebugScript:
+            print(dtJson)
+            pass
+
+        utcDt = str(dtJson["utc_datetime"])
+
+        # Get (converting from str) the ISO format of datetime from UTC json data
+        # Use the timezone info from local configuration to get the numeric difference
+        # Use the timezone to create the delta that will be used to calculate the correct local time
+
+        dt = datetime.datetime.fromisoformat(utcDt)
+        now = datetime.datetime.now().astimezone()
+        tzDiff = int(str(now.timetz().tzinfo))
+        delta = datetime.timedelta(0, 0, 0, 0, 0, tzDiff, 0)
+
+        if bDebugScript:
+            print(dt)
+            print(now)
+            print(tzDiff)
+            pass
+
+        # Sum the datetime with delta to find the correct local time
+        dtFix = str(dt + delta)
+
+        if bDebugScript:
+            print(str(dtFix))
+            pass
+
+        # Copy only the date and time and replace it's separators to comma to use as parameters:
+        dateInfo = strncpy(dtFix, 0, 10).replace('-', ',')
+        timeInfo = strncpy(dtFix, 11, 8).replace(':', ',')
+
+        if bDebugScript:
+            print(dateInfo)
+            print(timeInfo)
+            pass
+
+        # PowerShell Script lines to write into a temporary file and execute
+        pwshScript = [
+            "#Require -Version 5.0",
+            "Write-Host -Object \"`nSetting correct date and time on Windows Clock...`n\"",
+            f"$datetime = [System.DateTime]::new({dateInfo},{timeInfo})",
+            "try",
+            "{",
+            "    #Set-Date -Date $datetime",
+            "    Write-Host -Object \"Windows clock set to:\"",
+            "    Write-Output $datetime",
+            "    return 0",
+            "}",
+            "catch",
+            "{",
+            "    Write-Host -Object \"Fail to set the Windows Clock\" -Foreground Red",
+            "    Write-Host -Object \"No modification was made into your system\"",
+            "    return 1",
+            "}",
+        ]
+
+        # Write the temporary file and generate a PowerShell script:
+        with tempfile.NamedTemporaryFile("w", suffix=".tmp", delete=False) as tmpScript:
+            for l in pwshScript:
+                tmpScript.write(f"{l}\n")
+                pass
+        
+        tmpScript.close()
+
+        # PowerShell command:
+        pwshCmd = f"powershell -File \"{tmpScript.name}\""
+
+        if bDebugScript:
+            print(pwshCmd)
+            pass
+        
+        if not bTestScript:
+            scriptReturn = os.system(pwshCmd)
+            if bDebugScript:
+                print(f"PowerShell Return: {scriptReturn}")
+                pass
+            if scriptReturn == 1:
+                sys.exit(3) # PowerShell script failed to set the date
+            pass
+
+        sys.exit(0) # No exception or fail was detected
         pass
     else:
-        print(f"Retrying... ({i}/{iMax})\nStatus: {respData.getStatus()} Reason: {respData.getReason()}")
-        pass
-    i = i + 1
-    # Wait before another trying
-    time.sleep(sleepTimer)
-    pass
-
-if successOp:
-    # Create a JSON object from server response
-    dtJson = json.loads(respData.getResponseData())
-
-    if DEBUG_SCRIPT:
-        print(dtJson)
-        pass
-
-    utcDt = str(dtJson["utc_datetime"])
-
-    # Get (converting from str) the ISO format of datetime from UTC json data
-    # Use the timezone info from local configuration to get the numeric difference
-    # Use the timezone to create the delta that will be used to calculate the correct local time
-
-    dt = datetime.datetime.fromisoformat(utcDt)
-    now = datetime.datetime.now().astimezone()
-    tzDiff = int(str(now.timetz().tzinfo))
-    delta = datetime.timedelta(0, 0, 0, 0, 0, tzDiff, 0)
-
-    if DEBUG_SCRIPT:
-        print(dt)
-        print(now)
-        print(tzDiff)
-        pass
-
-    # Sum the datetime with delta to find the correct local time
-    dtFix = str(dt + delta)
-
-    if DEBUG_SCRIPT:
-        print(str(dtFix))
-        pass
-
-    # Copy only the date and time and replace it's separators to comma to use as parameters:
-    dateInfo = strncpy(dtFix, 0, 10).replace('-', ',')
-    timeInfo = strncpy(dtFix, 11, 8).replace(':', ',')
-
-    if DEBUG_SCRIPT:
-        print(dateInfo)
-        print(timeInfo)
-        pass
-
-    # PowerShell Script lines to write into a temporary file and execute
-    pwshScript = [
-        "#Require -Version 5.0",
-        "Write-Host -Object \"`nSetting correct date and time on Windows Clock...`n\"",
-        f"$datetime = [System.DateTime]::new({dateInfo},{timeInfo})",
-        "try",
-        "{",
-        "    #Set-Date -Date $datetime",
-        "    Write-Host -Object \"Windows clock set to:\"",
-        "    Write-Output $datetime",
-        "    return 0",
-        "}",
-        "catch",
-        "{",
-        "    Write-Host -Object \"Fail to set the Windows Clock\" -Foreground Red",
-        "    Write-Host -Object \"No modification was made into your system\"",
-        "    return 1",
-        "}",
-    ]
-
-    # Write the temporary file and generate a PowerShell script:
-    with tempfile.NamedTemporaryFile("w", suffix=".tmp", delete=False) as tmpScript:
-        for l in pwshScript:
-            tmpScript.write(f"{l}\n")
-            pass
-    
-    tmpScript.close()
-
-    # PowerShell command:
-    pwshCmd = f"powershell -File \"{tmpScript.name}\""
-
-    if DEBUG_SCRIPT:
-        print(pwshCmd)
-        pass
-    
-    scriptReturn = os.system(pwshCmd)
-
-    if DEBUG_SCRIPT:
-        print(f"PowerShell Return: {scriptReturn}")
+        sys.exit(2) # Script reached maximum of tries to get the server information, but no response was send
         pass
     pass
