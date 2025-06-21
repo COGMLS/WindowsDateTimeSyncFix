@@ -6,6 +6,12 @@
     <link rel="stylesheet" href="./CSS/ReleaseNotes.css">
 </head>
 <dl>
+    <!-- 0.5.1 (2025/06/21) -->
+    <dt><version-data>0.5.1</version-data> | Release Date: 2025/06/21</dt>
+    <dd>Fix <code>bIsTestScript</code> name</dd>
+    <dd>Fix print help array</dd>
+    <dd>Fix show help correctly</dd>
+    <dd>Fix test script mode</dd>
     <!-- 0.5.0 (2025/06/21) -->
     <dt><version-data>0.5.0</version-data> | Release Date: 2025/06/21</dt>
     <dd>Added main entry</dd>
