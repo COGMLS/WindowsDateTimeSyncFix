@@ -12,8 +12,8 @@ import subprocess
 # Version info:
 __ScriptVersionNumber__ = {
         "Major"     :   0,
-        "Minor"     :   5,
-        "Revision"  :   1
+        "Minor"     :   6,
+        "Revision"  :   0
     }
 
 # Debug Script mode:
