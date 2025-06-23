@@ -6,6 +6,8 @@ import sys
 import copy
 import time
 import tempfile
+import platform
+import subprocess
 
 # Version info:
 __ScriptVersionNumber__ = {
@@ -412,7 +414,7 @@ if __name__ == "__main__":
         ]
 
         # Write the temporary file and generate a PowerShell script:
-        with tempfile.NamedTemporaryFile("w", suffix=".tmp", delete=False) as tmpScript:
+        with tempfile.NamedTemporaryFile("w", suffix=".ps1", delete=False) as tmpScript:
             for l in pwshScript:
                 tmpScript.write(f"{l}\n")
                 pass
@@ -427,11 +429,11 @@ if __name__ == "__main__":
             pass
         
         if not bIsTestScript:
-            scriptReturn = os.system(pwshCmd)
+            scriptReturn = subprocess.run(pwshCmd)
             if bDebugScript:
-                print(f"PowerShell Return: {scriptReturn}")
+                print(f"PowerShell Return: {scriptReturn.returncode}")
                 pass
-            if scriptReturn == 1:
+            if scriptReturn.returncode == 1:
                 sys.exit(3) # PowerShell script failed to set the date
             pass
 
