@@ -6,16 +6,19 @@ import sys
 import copy
 import time
 import tempfile
+import platform
+import subprocess
 
 # Version info:
 __ScriptVersionNumber__ = {
         "Major"     :   0,
-        "Minor"     :   5,
-        "Revision"  :   1
+        "Minor"     :   6,
+        "Revision"  :   0
     }
 
 # Debug Script mode:
 DEBUG_SCRIPT = False
+DEV_MODE = True
 
 # Control Variables:
 bDebugScript = DEBUG_SCRIPT
@@ -23,6 +26,7 @@ bExperimentalMode = False
 bIsHelpCli = False
 bIsTestScript = False
 bIsUnknownCli = False
+bIgnoreMinWinVer = False
 
 # Help command line:
 helpCmd = ["-help","-h","-?"]
@@ -32,7 +36,9 @@ help_cli = [
     "\t-help -h -?          Access the command line help",
     "\t-test                Use the script without apply modification on your system",
     "\t-debug               Enable the script debug mode, showing processed data and status code",
-    "\t--experimental       Enable the script experimental features"
+    "\t--experimental       Enable the script experimental features",
+    "\t--bypass-win-ver     Bypass Windows minimum version to execute the script",
+    "\t                     NOTE: This may lead to unexpected behavior!"
 ]
 
 # Help arrays index:
@@ -52,12 +58,30 @@ for arg in sys.argv:
     if arg.lower() == "-test":
         bIsTestScript = True
         pass
+    if arg.lower() == "--bypass-win-ver":
+        bIgnoreMinWinVer = True
+        pass
     pass
 
 # Verify Python version:
 if (sys.version_info.major < 3) or (sys.version_info.major >= 3 and sys.version_info.minor < 6):
     print("This script can only work on Python 3.6 or more recently")
     sys.exit(1) # Incompatible version
+    pass
+
+# Verify platform:
+if sys.platform != 'win32' and not bIsTestScript and not DEV_MODE:
+    print("Current platform is not supported!\nTo test this script in other systems, use -test parameter.")
+    sys.exit(5) # Incompatible platform
+    pass
+
+# Verify Windows version:
+if sys.platform != 'win32':
+    win32Ver = platform.win32_ver()
+    win_build = int(win32Ver[1].split('.')[2])
+    if win_build < 10240 and not bIgnoreMinWinVer:
+        sys.exit(6) # Minimum Windows version is Windows 10 (10.0.10240)
+        pass
     pass
 
 #
@@ -272,7 +296,6 @@ def getDateTimeInfo(srvUrl: str, localUrl: str) -> HttpResponseData:
         client.request("GET", localUrl)
         resp = client.getresponse()
         respInfo.setResponse(resp)
-        client.close()
 
         if resp.status == 200:
             status = 0
@@ -292,6 +315,8 @@ def getDateTimeInfo(srvUrl: str, localUrl: str) -> HttpResponseData:
 
     except:
         status = 5
+    finally:
+        client.close()
 
     respInfo.setStatus(status)
     
@@ -362,21 +387,23 @@ if __name__ == "__main__":
         # Use the timezone to create the delta that will be used to calculate the correct local time
 
         dt = datetime.datetime.fromisoformat(utcDt)
-        now = datetime.datetime.now().astimezone()
-        tzDiff = int(str(now.timetz().tzinfo))
+        now = datetime.datetime.now()
+        now_localtime = time.localtime()
+        local_tzinfo = now_localtime.tm_gmtoff / 3600 # Convert seconds to hours
+        tzDiff = int(local_tzinfo) # Convert the float values to integers
         delta = datetime.timedelta(0, 0, 0, 0, 0, tzDiff, 0)
 
         if bDebugScript:
-            print(dt)
-            print(now)
-            print(tzDiff)
+            print(f"UTC server time: {dt}")
+            print(f"Local time: {now}")
+            print(f"System timezone configuration: UTC{tzDiff}:00")
             pass
 
         # Sum the datetime with delta to find the correct local time
         dtFix = str(dt + delta)
 
         if bDebugScript:
-            print(str(dtFix))
+            print(f"Setting new system date and time to {dtFix}")
             pass
 
         # Copy only the date and time and replace it's separators to comma to use as parameters:
@@ -390,7 +417,8 @@ if __name__ == "__main__":
 
         # PowerShell Script lines to write into a temporary file and execute
         pwshScript = [
-            "#Require -Version 5.0",
+            "#Require -Version 4.0",
+            "#Requires -RunAsAdministrator",
             "Write-Host -Object \"`nSetting correct date and time on Windows Clock...`n\"",
             f"$datetime = [System.DateTime]::new({dateInfo},{timeInfo})",
             "try",
@@ -409,7 +437,7 @@ if __name__ == "__main__":
         ]
 
         # Write the temporary file and generate a PowerShell script:
-        with tempfile.NamedTemporaryFile("w", suffix=".tmp", delete=False) as tmpScript:
+        with tempfile.NamedTemporaryFile("w", suffix=".ps1", delete=False) as tmpScript:
             for l in pwshScript:
                 tmpScript.write(f"{l}\n")
                 pass
@@ -424,11 +452,11 @@ if __name__ == "__main__":
             pass
         
         if not bIsTestScript:
-            scriptReturn = os.system(pwshCmd)
+            scriptReturn = subprocess.run(pwshCmd)
             if bDebugScript:
-                print(f"PowerShell Return: {scriptReturn}")
+                print(f"PowerShell Return: {scriptReturn.returncode}")
                 pass
-            if scriptReturn == 1:
+            if scriptReturn.returncode == 1:
                 sys.exit(3) # PowerShell script failed to set the date
             pass
 

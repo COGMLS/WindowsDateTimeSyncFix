@@ -6,6 +6,19 @@
     <link rel="stylesheet" href="./CSS/ReleaseNotes.css">
 </head>
 <dl>
+    <!-- 0.6.0 (2025/06/23) -->
+    <dt><version-data>0.6.0</version-data> | Release Date: 2025/06/23</dt>
+    <dd>Added more precise debug information</dd>
+    <dd>Added new command line option</dd>
+    <dd>Added DEV_MODE constant</dd>
+    <dd>Added platform test</dd>
+    <dd>Added Windows version test</dd>
+    <dd>Changed way to call PowerShell</dd>
+    <dd><fix-alert>Fixed</fix-alert> timezone information on Windows platforms</dd>
+    <dd><fix-alert>Fixed</fix-alert> applying corrected time</dd>
+    <dd><fix-alert>Fixed</fix-alert> minimum PowerShell version</dd>
+    <dd><fix-alert>Fixed</fix-alert> missing admin rights check on PowerShell script</dd>
+    <dd><fix-alert>Fixed</fix-alert> keep admin privileges when calling PowerShell</dd>
     <!-- 0.5.1 (2025/06/21) -->
     <dt><version-data>0.5.1</version-data> | Release Date: 2025/06/21</dt>
     <dd>Fix <code>bIsTestScript</code> name</dd>
