@@ -362,21 +362,23 @@ if __name__ == "__main__":
         # Use the timezone to create the delta that will be used to calculate the correct local time
 
         dt = datetime.datetime.fromisoformat(utcDt)
-        now = datetime.datetime.now().astimezone()
-        tzDiff = int(str(now.timetz().tzinfo))
+        now = datetime.datetime.now()
+        now_localtime = time.localtime()
+        local_tzinfo = now_localtime.tm_gmtoff / 3600 # Convert seconds to hours
+        tzDiff = int(local_tzinfo) # Convert the float values to integers
         delta = datetime.timedelta(0, 0, 0, 0, 0, tzDiff, 0)
 
         if bDebugScript:
-            print(dt)
-            print(now)
-            print(tzDiff)
+            print(f"UTC server time: {dt}")
+            print(f"Local time: {now}")
+            print(f"System timezone configuration: UTC{tzDiff}:00")
             pass
 
         # Sum the datetime with delta to find the correct local time
         dtFix = str(dt + delta)
 
         if bDebugScript:
-            print(str(dtFix))
+            print(f"Setting new system date and time to {dtFix}")
             pass
 
         # Copy only the date and time and replace it's separators to comma to use as parameters:
@@ -390,7 +392,8 @@ if __name__ == "__main__":
 
         # PowerShell Script lines to write into a temporary file and execute
         pwshScript = [
-            "#Require -Version 5.0",
+            "#Require -Version 4.0",
+            "#Requires -RunAsAdministrator",
             "Write-Host -Object \"`nSetting correct date and time on Windows Clock...`n\"",
             f"$datetime = [System.DateTime]::new({dateInfo},{timeInfo})",
             "try",
