@@ -274,7 +274,6 @@ def getDateTimeInfo(srvUrl: str, localUrl: str) -> HttpResponseData:
         client.request("GET", localUrl)
         resp = client.getresponse()
         respInfo.setResponse(resp)
-        client.close()
 
         if resp.status == 200:
             status = 0
@@ -294,6 +293,8 @@ def getDateTimeInfo(srvUrl: str, localUrl: str) -> HttpResponseData:
 
     except:
         status = 5
+    finally:
+        client.close()
 
     respInfo.setStatus(status)
     
