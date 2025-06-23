@@ -18,6 +18,7 @@ __ScriptVersionNumber__ = {
 
 # Debug Script mode:
 DEBUG_SCRIPT = False
+DEV_MODE = True
 
 # Control Variables:
 bDebugScript = DEBUG_SCRIPT
@@ -25,6 +26,7 @@ bExperimentalMode = False
 bIsHelpCli = False
 bIsTestScript = False
 bIsUnknownCli = False
+bIgnoreMinWinVer = False
 
 # Help command line:
 helpCmd = ["-help","-h","-?"]
@@ -34,7 +36,9 @@ help_cli = [
     "\t-help -h -?          Access the command line help",
     "\t-test                Use the script without apply modification on your system",
     "\t-debug               Enable the script debug mode, showing processed data and status code",
-    "\t--experimental       Enable the script experimental features"
+    "\t--experimental       Enable the script experimental features",
+    "\t--bypass-win-ver     Bypass Windows minimum version to execute the script",
+    "\t                     NOTE: This may lead to unexpected behavior!"
 ]
 
 # Help arrays index:
@@ -54,12 +58,30 @@ for arg in sys.argv:
     if arg.lower() == "-test":
         bIsTestScript = True
         pass
+    if arg.lower() == "--bypass-win-ver":
+        bIgnoreMinWinVer = True
+        pass
     pass
 
 # Verify Python version:
 if (sys.version_info.major < 3) or (sys.version_info.major >= 3 and sys.version_info.minor < 6):
     print("This script can only work on Python 3.6 or more recently")
     sys.exit(1) # Incompatible version
+    pass
+
+# Verify platform:
+if sys.platform != 'win32' and not bIsTestScript and not DEV_MODE:
+    print("Current platform is not supported!\nTo test this script in other systems, use -test parameter.")
+    sys.exit(5) # Incompatible platform
+    pass
+
+# Verify Windows version:
+if sys.platform != 'win32':
+    win32Ver = platform.win32_ver()
+    win_build = int(win32Ver[1].split('.')[2])
+    if win_build < 10240 and not bIgnoreMinWinVer:
+        sys.exit(6) # Minimum Windows version is Windows 10 (10.0.10240)
+        pass
     pass
 
 #
