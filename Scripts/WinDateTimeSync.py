@@ -12,13 +12,14 @@ import subprocess
 # Version info:
 __ScriptVersionNumber__ = {
         "Major"     :   0,
-        "Minor"     :   6,
+        "Minor"     :   7,
         "Revision"  :   0
     }
 
-# Debug Script mode:
-DEBUG_SCRIPT = False
+# Constants:
+DEBUG_SCRIPT = False # Debug Mode
 DEV_MODE = True
+DEFAULT_CONNECTION_TRIES = 10
 
 # Control Variables:
 bDebugScript = DEBUG_SCRIPT
@@ -27,6 +28,11 @@ bIsHelpCli = False
 bIsTestScript = False
 bIsUnknownCli = False
 bIgnoreMinWinVer = False
+bUsingCustomTries = False
+iPwshType = 0   # 0: Windows PowerShell, 1: PowerShell
+
+# Other variables:
+nSrvTries = DEFAULT_CONNECTION_TRIES
 
 # Help command line:
 helpCmd = ["-help","-h","-?"]
@@ -36,9 +42,12 @@ help_cli = [
     "\t-help -h -?          Access the command line help",
     "\t-test                Use the script without apply modification on your system",
     "\t-debug               Enable the script debug mode, showing processed data and status code",
+    "\t-tries=<value>       Set a custom number of tries to connect with server (Default is 10)",
+    "\t                         NOTE: Any value set value below than one will return an error 8.",
+    "\t-pwsh                Force to use PowerShell and not Windows PowerShell",
     "\t--experimental       Enable the script experimental features",
     "\t--bypass-win-ver     Bypass Windows minimum version to execute the script",
-    "\t                     NOTE: This may lead to unexpected behavior!"
+    "\t                         NOTE: This may lead to unexpected behavior!"
 ]
 
 # Help arrays index:
@@ -63,6 +72,26 @@ for arg in sys.argv:
         pass
     pass
 
+# Experimental CLI options:
+if bExperimentalMode:
+    for arg in sys.argv:
+        # Check if custom connection tries are enabled:
+        if arg.lower().startswith("-tries="):
+            argVal = arg.removeprefix("-tries=")
+            if len(argVal) > 0:
+                try:
+                    nSrvTries = int(argVal)
+                except:
+                    sys.exit(8) # Invalid argument value on CLI
+                pass
+            pass
+        # Check for PowerShell type argument:
+        if arg.lower() == "-pwsh":
+            iPwshType = 1
+            pass
+        pass
+    pass
+
 # Verify Python version:
 if (sys.version_info.major < 3) or (sys.version_info.major >= 3 and sys.version_info.minor < 6):
     print("This script can only work on Python 3.6 or more recently")
@@ -76,7 +105,7 @@ if sys.platform != 'win32' and not bIsTestScript and not DEV_MODE:
     pass
 
 # Verify Windows version:
-if sys.platform != 'win32':
+if sys.platform == 'win32':
     win32Ver = platform.win32_ver()
     win_build = int(win32Ver[1].split('.')[2])
     if win_build < 10240 and not bIgnoreMinWinVer:
@@ -339,9 +368,13 @@ if __name__ == "__main__":
     PrintScriptPresentation(True)
 
     i = 1
-    iMax = 10
+    iMax = DEFAULT_CONNECTION_TRIES
     successOp = False
     sleepTimer = 3
+
+    if bUsingCustomTries and bExperimentalMode:
+        iMax = nSrvTries
+        pass
 
     # The server has a difficulty to make the connection, probably will need multiple tries:
     while i <= iMax and successOp != True:
@@ -416,14 +449,27 @@ if __name__ == "__main__":
             pass
 
         # PowerShell Script lines to write into a temporary file and execute
+        if DEV_MODE:
+            bIsTestScript = True
+            pass
+
         pwshScript = [
-            "#Require -Version 4.0",
+            "#Requires -Version 4.0",
             "#Requires -RunAsAdministrator",
+            f"[bool]$DebugMode = ${bDebugScript}",
+            f"[bool]$TestScript = ${bIsTestScript}",
             "Write-Host -Object \"`nSetting correct date and time on Windows Clock...`n\"",
             f"$datetime = [System.DateTime]::new({dateInfo},{timeInfo})",
             "try",
             "{",
-            "    #Set-Date -Date $datetime",
+            "    if ($TestScript)",
+            "    {",
+            "        Write-Warning -Message \"Script is in Test Mode. No modification will be applied!\"",
+            "    }",
+            "    else",
+            "    {",
+            "        Set-Date -Date $datetime",
+            "    }",
             "    Write-Host -Object \"Windows clock set to:\"",
             "    Write-Output $datetime",
             "    return 0",
@@ -445,20 +491,32 @@ if __name__ == "__main__":
         tmpScript.close()
 
         # PowerShell command:
-        pwshCmd = f"powershell -File \"{tmpScript.name}\""
+        pwshExec = "powershell"
+
+        if iPwshType == 1:
+            pwshExec = "pwsh"
+            pass
+
+        pwshCmd = f"{pwshExec} -File \"{tmpScript.name}\""
+
+        if not os.path.exists(tmpScript.name):
+            sys.exit(9) # Fail to save script file
+            pass
 
         if bDebugScript:
             print(pwshCmd)
             pass
         
-        if not bIsTestScript:
+        try:
             scriptReturn = subprocess.run(pwshCmd)
             if bDebugScript:
                 print(f"PowerShell Return: {scriptReturn.returncode}")
                 pass
             if scriptReturn.returncode == 1:
                 sys.exit(3) # PowerShell script failed to set the date
-            pass
+                pass
+        except:
+            sys.exit(7) # Exception on calling PowerShell
 
         sys.exit(0) # No exception or fail was detected
         pass
