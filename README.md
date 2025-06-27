@@ -23,6 +23,15 @@ This repository contain a [Docs](./Docs/) directory where the documentation is k
     <link rel="stylesheet" href="./CSS/ReleaseNotes.css">
 </head>
 <dl>
+    <!-- 0.7.0 (2025/06/26) -->
+    <dt><version-data>0.7.0</version-data> | Release Date: 2025/06/26</dt>
+    <dd>Added experimental custom number of connection tries</dd>
+    <dd>Added experimental force PowerShell and not Windows PowerShell</dd>
+    <dd>Added test mode on PowerShell script</dd>
+    <dd>Enabled <code>Set-Date</code> on PowerShell script</dd>
+    <dd>Added <code>try-except</code> blocks on calling PowerShell</dd>
+    <dd><fix-alert>Fixed</fix-alert> testing Windows build value</dd>
+    <dd><fix-alert>Fixed</fix-alert> PowerShell script require minimum version</dd>
     <!-- 0.6.0 (2025/06/23) -->
     <dt><version-data>0.6.0</version-data> | Release Date: 2025/06/23</dt>
     <dd>Added more precise debug information</dd>
@@ -42,19 +51,6 @@ This repository contain a [Docs](./Docs/) directory where the documentation is k
     <dd>Fix print help array</dd>
     <dd>Fix show help correctly</dd>
     <dd>Fix test script mode</dd>
-    <!-- 0.5.0 (2025/06/21) -->
-    <dt><version-data>0.5.0</version-data> | Release Date: 2025/06/21</dt>
-    <dd>Added main entry</dd>
-    <dd>Added script presentation</dd>
-    <dd>Move previous script data processing into main entry</dd>
-    <dd>Added exit with error codes</dd>
-    <dd>Added new comments</dd>
-    <dd>Added to execute PowerShell script only when is not in test mode</dd>
-    <dd>Added new methods</dd>
-    <dd>Added variable controls</dd>
-    <dd>Added help command line</dd>
-    <dd>Added cli test for debug and experimental options</dd>
-    <dd>Removed unused code</dd>
 </dl>
 
 # License
