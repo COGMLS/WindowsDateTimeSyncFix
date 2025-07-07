@@ -9,13 +9,13 @@
 - Command line options
 - Script return codes
 - Test Windows version before start script
+- Test PowerShell version before start script
+- Experimental feature control
+- PowerShell command to change the system date and time
 
 ## Implementations under development:
 
-- PowerShell command to change the system date and time
 - Add comments and documentation
-- Test PowerShell version before start script
-- Experimental feature control
 
 ## Future Implementations:
 
@@ -30,6 +30,7 @@
 | 3 | On Windows platform the timezone information is not receiving the offset, but it's location or name. | **NOTE:** This part of the code was created and tested on Linux first and the information return is a string value of UTC offset | **FIXED** |
 | 4 | PowerShell is called without admin privileges | **NOTE:** Calling with `os.system()` does not keep the privileges. | **FIXED** |
 | 5 | PowerShell can't open temporary script |  | **FIXED** |
+| 6 | Calling PowerShell may throw an exception that leads to ***error 7***, with description: *FileNotFoundError: [Errno 2] No such file or directory: 'powershell -File "...\tmp353q0dm6.ps1"'* | In the previous version **0.6.0** no exception was detected | Not fixed |
 
 ## Deprecated Features:
 
