@@ -13,7 +13,7 @@ import subprocess
 __ScriptVersionNumber__ = {
         "Major"     :   0,
         "Minor"     :   7,
-        "Revision"  :   0
+        "Revision"  :   1
     }
 
 # Constants:
@@ -472,13 +472,23 @@ if __name__ == "__main__":
             "    }",
             "    Write-Host -Object \"Windows clock set to:\"",
             "    Write-Output $datetime",
-            "    return 0",
+            "   if ($DebugMode)",
+            "   {",
+            "       Write-Host -Object \"[DEBUG]::PowerShell error code: \" -NoNewLine",
+            "       return 0",
+            "   }",
+            "    exit 0",
             "}",
             "catch",
             "{",
             "    Write-Host -Object \"Fail to set the Windows Clock\" -Foreground Red",
             "    Write-Host -Object \"No modification was made into your system\"",
-            "    return 1",
+            "   if ($DebugMode)",
+            "   {",
+            "       Write-Host -Object \"[DEBUG]::PowerShell error code: \" -NoNewLine",
+            "       return 1",
+            "   }",
+            "    exit 1",
             "}",
         ]
 
