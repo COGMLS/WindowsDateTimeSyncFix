@@ -18,7 +18,7 @@ __ScriptVersionNumber__ = {
 
 # Constants:
 DEBUG_SCRIPT = False # Debug Mode
-DEV_MODE = True
+DEV_MODE = False
 DEFAULT_CONNECTION_TRIES = 10
 
 # Control Variables:
