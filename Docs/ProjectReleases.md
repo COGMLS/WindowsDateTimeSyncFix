@@ -6,6 +6,12 @@
     <link rel="stylesheet" href="./CSS/ReleaseNotes.css">
 </head>
 <dl>
+    <!-- 0.7.1 (2025/07/14) -->
+    <dt><version-data>0.7.1</version-data> | Release Date: 2025/07/14</dt>
+    <dd>Changed PowerShell script to use exit by default. Now PowerShell script will only show to return value when DebugMode is True</dd>
+    <dd>Disabled <code>DEV_MODE</code></dd>
+    <dd>Added remove temporary PowerShell script file</dd>
+    <dd><strong>The script passed in all tests to change and update the Windows date and time correctly</strong></dd>
     <!-- 0.7.0 (2025/06/26) -->
     <dt><version-data>0.7.0</version-data> | Release Date: 2025/06/26</dt>
     <dd>Added experimental custom number of connection tries</dd>
@@ -19,7 +25,7 @@
     <dt><version-data>0.6.0</version-data> | Release Date: 2025/06/23</dt>
     <dd>Added more precise debug information</dd>
     <dd>Added new command line option</dd>
-    <dd>Added DEV_MODE constant</dd>
+    <dd>Added <code>DEV_MODE</code> constant</dd>
     <dd>Added platform test</dd>
     <dd>Added Windows version test</dd>
     <dd>Changed way to call PowerShell</dd>

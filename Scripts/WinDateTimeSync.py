@@ -13,12 +13,12 @@ import subprocess
 __ScriptVersionNumber__ = {
         "Major"     :   0,
         "Minor"     :   7,
-        "Revision"  :   0
+        "Revision"  :   1
     }
 
 # Constants:
 DEBUG_SCRIPT = False # Debug Mode
-DEV_MODE = True
+DEV_MODE = False
 DEFAULT_CONNECTION_TRIES = 10
 
 # Control Variables:
@@ -140,23 +140,29 @@ class HttpResponseData:
     _hasResponse: bool
     _response_data: bytes
     _http_code: int
+    _isOpen: False
 
     def __init__(self):
         self._status = -2
         self._http_code = 0
         self._response_data = 0x0
         self._hasResponse = False
+        self._isOpen = True
         pass
 
     def setStatus(self, status: int) -> None:
-        self._status = copy.copy(status)
+        if self.isOpen():
+            self._status = copy.copy(status)
+            pass
         pass
 
     def setResponse(self, response: http.client.HTTPResponse) -> None:
-        self._hasResponse = True
-        self._response = copy.copy(response)
-        self._http_code = response.status
-        self._response_data = response.read()   # During the response copy the response data is lost. Read it and save inside a separated variable
+        if self.isOpen():
+            self._hasResponse = True
+            self._response = copy.copy(response)
+            self._http_code = response.status
+            self._response_data = response.read()   # During the response copy the response data is lost. Read it and save inside a separated variable
+            pass
         pass
 
     def getStatus(self) -> int:
@@ -169,7 +175,7 @@ class HttpResponseData:
             return "Unknown"
     
     def getResponse(self) -> int | http.client.HTTPResponse:
-        if self._hasResponse:
+        if self._hasResponse and self.isOpen():
             return self._response
         else:
             return 0
@@ -179,6 +185,17 @@ class HttpResponseData:
         
     def getResponseData(self) -> bytes:
         return self._response_data
+    
+    def isOpen(self) -> bool:
+        return self._isOpen
+    
+    def close(self) -> None:
+        try:
+            self._response.close()
+            self._isOpen = False
+        except:
+            pass
+        pass
 
 #
 # Script functions:
@@ -351,6 +368,21 @@ def getDateTimeInfo(srvUrl: str, localUrl: str) -> HttpResponseData:
     
     return respInfo
 
+def rmPwshScript(tmpScriptPath: str) -> None:
+    global bDebugScript
+    # Remove the temporary script file
+    if bDebugScript:
+        print("Cleaning temporary files...")
+        pass
+    try:
+        os.remove(tmpScriptPath)
+    except:
+        print(f"Fail to remove temporary script file: {tmpScriptPath}")
+        if bDebugScript:
+            print(sys.exception())
+            pass
+    pass
+
 #
 # Script main entry:
 #
@@ -395,6 +427,7 @@ if __name__ == "__main__":
         i = i + 1
         # Wait before another trying
         time.sleep(sleepTimer)
+        respData.close()
         pass
 
     # Report the not successful operation:
@@ -472,13 +505,23 @@ if __name__ == "__main__":
             "    }",
             "    Write-Host -Object \"Windows clock set to:\"",
             "    Write-Output $datetime",
-            "    return 0",
+            "   if ($DebugMode)",
+            "   {",
+            "       Write-Host -Object \"[DEBUG]::PowerShell error code: \" -NoNewLine",
+            "       return 0",
+            "   }",
+            "    exit 0",
             "}",
             "catch",
             "{",
             "    Write-Host -Object \"Fail to set the Windows Clock\" -Foreground Red",
             "    Write-Host -Object \"No modification was made into your system\"",
-            "    return 1",
+            "   if ($DebugMode)",
+            "   {",
+            "       Write-Host -Object \"[DEBUG]::PowerShell error code: \" -NoNewLine",
+            "       return 1",
+            "   }",
+            "    exit 1",
             "}",
         ]
 
@@ -512,10 +555,12 @@ if __name__ == "__main__":
             if bDebugScript:
                 print(f"PowerShell Return: {scriptReturn.returncode}")
                 pass
+            rmPwshScript(tmpScript.name)
             if scriptReturn.returncode == 1:
                 sys.exit(3) # PowerShell script failed to set the date
                 pass
         except:
+            rmPwshScript(tmpScript.name)
             sys.exit(7) # Exception on calling PowerShell
 
         sys.exit(0) # No exception or fail was detected
