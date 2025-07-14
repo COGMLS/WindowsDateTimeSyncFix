@@ -351,6 +351,21 @@ def getDateTimeInfo(srvUrl: str, localUrl: str) -> HttpResponseData:
     
     return respInfo
 
+def rmPwshScript(tmpScriptPath: str) -> None:
+    global bDebugScript
+    # Remove the temporary script file
+    if bDebugScript:
+        print("Cleaning temporary files...")
+        pass
+    try:
+        os.remove(tmpScriptPath)
+    except:
+        print(f"Fail to remove temporary script file: {tmpScriptPath}")
+        if bDebugScript:
+            print(sys.exception())
+            pass
+    pass
+
 #
 # Script main entry:
 #
@@ -522,10 +537,12 @@ if __name__ == "__main__":
             if bDebugScript:
                 print(f"PowerShell Return: {scriptReturn.returncode}")
                 pass
+            rmPwshScript(tmpScript.name)
             if scriptReturn.returncode == 1:
                 sys.exit(3) # PowerShell script failed to set the date
                 pass
         except:
+            rmPwshScript(tmpScript.name)
             sys.exit(7) # Exception on calling PowerShell
 
         sys.exit(0) # No exception or fail was detected
