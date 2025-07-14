@@ -140,23 +140,29 @@ class HttpResponseData:
     _hasResponse: bool
     _response_data: bytes
     _http_code: int
+    _isOpen: False
 
     def __init__(self):
         self._status = -2
         self._http_code = 0
         self._response_data = 0x0
         self._hasResponse = False
+        self._isOpen = True
         pass
 
     def setStatus(self, status: int) -> None:
-        self._status = copy.copy(status)
+        if self.isOpen():
+            self._status = copy.copy(status)
+            pass
         pass
 
     def setResponse(self, response: http.client.HTTPResponse) -> None:
-        self._hasResponse = True
-        self._response = copy.copy(response)
-        self._http_code = response.status
-        self._response_data = response.read()   # During the response copy the response data is lost. Read it and save inside a separated variable
+        if self.isOpen():
+            self._hasResponse = True
+            self._response = copy.copy(response)
+            self._http_code = response.status
+            self._response_data = response.read()   # During the response copy the response data is lost. Read it and save inside a separated variable
+            pass
         pass
 
     def getStatus(self) -> int:
@@ -169,7 +175,7 @@ class HttpResponseData:
             return "Unknown"
     
     def getResponse(self) -> int | http.client.HTTPResponse:
-        if self._hasResponse:
+        if self._hasResponse and self.isOpen():
             return self._response
         else:
             return 0
@@ -179,6 +185,17 @@ class HttpResponseData:
         
     def getResponseData(self) -> bytes:
         return self._response_data
+    
+    def isOpen(self) -> bool:
+        return self._isOpen
+    
+    def close(self) -> None:
+        try:
+            self._response.close()
+            self._isOpen = False
+        except:
+            pass
+        pass
 
 #
 # Script functions:
@@ -410,6 +427,7 @@ if __name__ == "__main__":
         i = i + 1
         # Wait before another trying
         time.sleep(sleepTimer)
+        respData.close()
         pass
 
     # Report the not successful operation:
