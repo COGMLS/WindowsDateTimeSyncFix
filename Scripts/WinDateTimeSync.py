@@ -12,8 +12,8 @@ import subprocess
 # Version info:
 __ScriptVersionNumber__ = {
         "Major"     :   0,
-        "Minor"     :   7,
-        "Revision"  :   1
+        "Minor"     :   8,
+        "Revision"  :   0
     }
 
 # Constants:
@@ -111,6 +111,11 @@ if sys.platform == 'win32':
     if win_build < 10240 and not bIgnoreMinWinVer:
         sys.exit(6) # Minimum Windows version is Windows 10 (10.0.10240)
         pass
+    pass
+
+# Import specific components:
+if sys.platform == 'win32' and bExperimentalMode and DEV_MODE:
+    import ctypes
     pass
 
 #
@@ -368,6 +373,7 @@ def getDateTimeInfo(srvUrl: str, localUrl: str) -> HttpResponseData:
     
     return respInfo
 
+# Method to remove the PowerShell temporary script file:
 def rmPwshScript(tmpScriptPath: str) -> None:
     global bDebugScript
     # Remove the temporary script file
@@ -382,6 +388,29 @@ def rmPwshScript(tmpScriptPath: str) -> None:
             print(sys.exception())
             pass
     pass
+
+# Method to test if the user has administrator rights:
+def IsUserAdmin() -> bool:
+    global bDebugScript
+    global bExperimentalMode
+
+    usrHasAdminRights = 0
+
+    if sys.platform == 'win32' and bExperimentalMode and DEV_MODE:
+        try:
+            usrHasAdminRights = ctypes.windll.shell32.IsUserAnAdmin()
+        except:
+            print("Fail to get admin status")
+            print(sys.exception())
+            usrHasAdminRights = -1
+        pass
+
+    if sys.platform != 'win32' and bExperimentalMode and DEV_MODE:
+        usrHasAdminRights = os.getuid()
+        return usrHasAdminRights == 0
+        pass
+
+    return usrHasAdminRights == 1
 
 #
 # Script main entry:
