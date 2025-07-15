@@ -1,18 +1,57 @@
 # Windows Date Time Sync Fix
 
-Windows Date Time Synchronization Fix is a solution created to fix the Windows 10 and Windows 11 clock (time and date) sync. This solution fix the date and time based on local timezone configuration, acquiring from a open server (worldtimeapi.org) the UTC date. Using the local timezone, it calculates the difference and apply the correct values into Windows clock.
+Windows Date Time Synchronization Fix is a solution created to fix the Windows 10 and Windows 11 clock (time and date) sync. This solution fixes the date and time based on local timezone configuration, acquiring from an open server (worldtimeapi.org) the UTC date. Using the local timezone, it calculates the difference and applies the correct values into Windows clock, fixing the outdated Windows clock.
+
+To force a date and time sync on your Windows, execute your Python with **administrator rights**, otherwise it will fail.
+
+> [!IMPORTANT]
+> This script does not send any personal data to the server and does not save any data from the internet.
 
 > [!NOTE]
-> This project is under development and documentations and project's script may not be available or ready to be used.
+> The connection with the server may need multiple tries.
+
+## Using the script:
+
+To use the script is just necessary to execute with Python 3 and have an internet connection to be able to communicate with the server. With you want to test the script before applying any modification use the `-test` command line.
+
+Example to sync and apply the correct date and time (Note: The captured console output is in Brazilian Portuguese format. The output will depend on your system regional settings):
+
+```
+python3 WinDateTimeSync.py
+
+Windows Date Time Sync - 0.7.1
+-----------------------------------------------------------------
+Retrying... (1/10)
+Status: 0 Reason: OK
+
+Setting correct date and time on Windows Clock...
+
+
+segunda-feira, 14 de julho de 2025 18:49:54
+Windows clock set to:
+segunda-feira, 14 de julho de 2025 18:49:54
+```
+
+### Script commands:
+
+The script has a help command line that can be accessed with parameters: `-?`, `-h` or `-help`. All commands are case-insensitive.
+
+| Command(s) | Description | Notes |
+| ---------- | ----------- | ----- |
+| -help -h -? | Access the command line help |  |
+| -test | Use the script without applying modification on your system |  |
+| -debug | Enable the script debug mode, showing processed data and status code |  |
+| -tries=<value> | Set a custom number of tries to connect with server (Default is 10) | Any value set value below then one will return error 8. **This is an experimental parameter** |
+| -pwsh | Force to use PowerShell and not Windows PowerShell | Windows only came with Windows PowerShell. Using this parameter when your computer does not have the PowerShell installed, will result in an error |
+| --experimental | Enable the script experimental features | Using this parameter may lead to unexpected behavior |
+| --bypass-win-ver | Bypass Windows minimum version to execute the script | This may lead to unexpected behavior |
 
 ## Documentation:
 
-This repository contain a [Docs](./Docs/) directory where the documentation is keep it.
-
 | Documentation | Description |
 | ------------- | ----------- |
-| [ProjectInfo.md](./Docs/ProjectInfo.md) | General project development information, including known bugs, deprecated or removed features. It also contain the recent and future features planned to be implemented |
-| [ProjectReleases.md](./Docs/ProjectReleases.md) | Contain all project releases and modifications. |
+| [ProjectInfo.md](./Docs/ProjectInfo.md) | General project development information, including known bugs, deprecated or removed features. It also contains the recent and future features planned to be implemented |
+| [ProjectReleases.md](./Docs/ProjectReleases.md) | Contains all project releases and modifications. |
 
 ## Releases:
 
@@ -23,6 +62,12 @@ This repository contain a [Docs](./Docs/) directory where the documentation is k
     <link rel="stylesheet" href="./CSS/ReleaseNotes.css">
 </head>
 <dl>
+    <!-- 0.7.1 (2025/07/14) -->
+    <dt><version-data>0.7.1</version-data> | Release Date: 2025/07/14</dt>
+    <dd>Changed PowerShell script to use exit by default. Now PowerShell script will only show to return value when DebugMode is True</dd>
+    <dd>Disabled <code>DEV_MODE</code></dd>
+    <dd>Added remove temporary PowerShell script file</dd>
+    <dd><strong>The script passed in all tests to change and update the Windows date and time correctly</strong></dd>
     <!-- 0.7.0 (2025/06/26) -->
     <dt><version-data>0.7.0</version-data> | Release Date: 2025/06/26</dt>
     <dd>Added experimental custom number of connection tries</dd>
@@ -45,12 +90,6 @@ This repository contain a [Docs](./Docs/) directory where the documentation is k
     <dd><fix-alert>Fixed</fix-alert> minimum PowerShell version</dd>
     <dd><fix-alert>Fixed</fix-alert> missing admin rights check on PowerShell script</dd>
     <dd><fix-alert>Fixed</fix-alert> keep admin privileges when calling PowerShell</dd>
-    <!-- 0.5.1 (2025/06/21) -->
-    <dt><version-data>0.5.1</version-data> | Release Date: 2025/06/21</dt>
-    <dd>Fix <code>bIsTestScript</code> name</dd>
-    <dd>Fix print help array</dd>
-    <dd>Fix show help correctly</dd>
-    <dd>Fix test script mode</dd>
 </dl>
 
 # License

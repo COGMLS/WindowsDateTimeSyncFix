@@ -43,7 +43,7 @@ help_cli = [
     "\t-test                Use the script without apply modification on your system",
     "\t-debug               Enable the script debug mode, showing processed data and status code",
     "\t-tries=<value>       Set a custom number of tries to connect with server (Default is 10)",
-    "\t                         NOTE: Any value set value below than one will return an error 8.",
+    "\t                         NOTE: Any value set value below then one will return error 8.",
     "\t-pwsh                Force to use PowerShell and not Windows PowerShell",
     "\t--experimental       Enable the script experimental features",
     "\t--bypass-win-ver     Bypass Windows minimum version to execute the script",
