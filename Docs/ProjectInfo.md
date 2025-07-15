@@ -13,10 +13,10 @@
 - Experimental feature control
 - PowerShell command to change the system date and time
 - `DEBUG_MODE` and `DEV_MODE` variables are disabled and allows the script to apply the date and time (To test the script, use parameter `-test`)
+- Add comments and documentation
 
 ## Implementations under development:
 
-- Add comments and documentation
 
 ## Future Implementations:
 
