@@ -1,17 +1,62 @@
 # Windows Date Time Fix Releases
 
-<!-- Windows Date Time Fix Releases Table: -->
+<!-- Windows Date Time Fix Releases Table for WinDateTimeSync.ps1: -->
+
+## [PowerShell] Windows Date and Time Sync Releases:
+
 <head>
     <link rel="stylesheet" href="Docs/CSS/ReleaseNotes.css">
     <link rel="stylesheet" href="./CSS/ReleaseNotes.css">
 </head>
 <dl>
+    <!-- 0.8.0 (2025/07/24) -->
+    <dt><version-data>0.8.0</version-data> | Release Date: 2025/07/24</dt>
+    <dd>Added experimental custom number of connection tries</dd>
+    <dd>Added test mode on PowerShell script</dd>
+    <dd>Added debug information output</dd>
+    <dd>Added platform test</dd>
+    <dd>Added main entry</dd>
+    <dd>Added script presentation</dd>
+    <dd>Added exit with error codes</dd>
+    <dd>Added variable controls</dd>
+    <dd>Added help command line</dd>
+    <dd>Added cli test for debug and experimental options</dd>
+    <dd>Added date and time extraction in UTC format from json content</dd>
+    <dd>Added local date and time getter information</dd>
+    <dd>Added local timezone configuration extraction</dd>
+    <dd>Added delta date and time between UTC server and local information</dd>
+    <dd>Added sum of delta time with local time</dd>
+    <dd>Added <code>HttpResponseData</code> class</dd>
+    <dd>Added <code>getDateTimeInfo</code> method</dd>
+    <dd>Added loop to try and get the date time information</dd>
+    <dd><strong>This version is based on all implementations made in deprecated Python script</strong></dd>
+</dl>
+
+<!-- Windows Date Time Fix Releases Table for WinDateTimeSync.py: -->
+
+## [Python] Windows Date and Time Sync Releases:
+
+> [NOTE!]
+> Python script version is marked as **DEPRECATED** and will not receive more updates in flavor to PowerShell version that offers a better performance and it is integrated with Windows OS.
+
+<head>
+    <link rel="stylesheet" href="Docs/CSS/ReleaseNotes.css">
+    <link rel="stylesheet" href="./CSS/ReleaseNotes.css">
+</head>
+<dl>
+    <!-- 0.8.0 (2025/07/14) -->
+    <dt><version-data>0.8.0</version-data> | Release Date: 2025/07/14</dt>
+    <dd>Added IsUserAdmin method</dd>
     <!-- 0.7.1 (2025/07/14) -->
     <dt><version-data>0.7.1</version-data> | Release Date: 2025/07/14</dt>
     <dd>Changed PowerShell script to use exit by default. Now PowerShell script will only show to return value when DebugMode is True</dd>
     <dd>Disabled <code>DEV_MODE</code></dd>
     <dd>Added remove temporary PowerShell script file</dd>
     <dd><strong>The script passed in all tests to change and update the Windows date and time correctly</strong></dd>
+    <!-- Hide previous releases for deprecated python script -->
+    <br>
+    <p>Check previous releases for <code>WinDateTimeSync.py</code></p>
+    <details>
     <!-- 0.7.0 (2025/06/26) -->
     <dt><version-data>0.7.0</version-data> | Release Date: 2025/06/26</dt>
     <dd>Added experimental custom number of connection tries</dd>
@@ -79,4 +124,5 @@
     <dd>Added <code>HttpResponseData</code> class</dd>
     <dd>Added <code>getDateTimeInfo</code> method</dd>
     <dd>Added loop to try and get the date time information</dd>
+    </details>
 </dl>
