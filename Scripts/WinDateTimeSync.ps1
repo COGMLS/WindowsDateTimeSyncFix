@@ -4,7 +4,7 @@
  # Author: Matheus Lopes Silvati
  # Date: 2025/07/24
  # ------------------------------------
- # Version: 0.1.0
+ # Version: 0.8.0
  # ------------------------------------
  # Obs: N/A
 ##########################################################>
@@ -59,7 +59,7 @@ param
                 Mandatory = $false
                 )]
     [switch]
-    $Debug,
+    $DebugScript,
 
     # Set a custom number of tries to connect with server (Default is 10)
     # NOTE: Any value set value below than one will return an error.
@@ -82,7 +82,7 @@ param
 # Version info:
 $__ScriptVersionNumber__ = @{
     "Major"     = 0;
-    "Minor"     = 1;
+    "Minor"     = 8;
     "Revision"  = 0
 }
 
@@ -189,7 +189,7 @@ function getDateTimeInfo
         $request = Invoke-WebRequest -Uri $finalUrl -ConnectionTimeoutSeconds 30
         $convertedJson = ConvertFrom-Json $request
 
-        $utcDt = $convertedJson.utc_datetime
+        $utcDt = ($convertedJson.utc_datetime).ToUniversalTime()
 
         if ($request.StatusCode -eq 200)
         {
@@ -220,6 +220,7 @@ function getDateTimeInfo
     catch
     {
         $status = 5
+        $resp.setHttpStatusDescription("Unknown")
     }
     finally
     {
@@ -262,7 +263,7 @@ if ($Test -or $DEV_MODE)
     $isTestMode = $true
 }
 
-if ($Debug -or $DEBUG_SCRIPT -or $DEV_MODE)
+if ($DebugScript -or $DEBUG_SCRIPT -or $DEV_MODE)
 {
     $isDebugMode = $true
 }
@@ -319,7 +320,7 @@ if ($isExperimentalMode)
 while ($i -le $iMax -and -not $successOp)
 {
     # Get the response data from the server and convert it to HttpResponseData object:
-    [HttpResponseData]$respData = getDateTimeInfo($WorldTimeApiUrl, $UtcUrlPart)
+    [HttpResponseData]$respData = getDateTimeInfo -srvUrl $WorldTimeApiUrl -localUrl $UtcUrlPart
     if ($respData.status -eq 0)
     {
         Write-Host -Object "Response at trying ($($i)/$($iMax))`nStatus: $($respData.status) Description: $($resp.httpDescription)"
@@ -358,7 +359,7 @@ if ($successOp -and $respData.hasDatetime)
         Write-Host -Object "System timezone configuration: UTC$($localTz.BaseUtcOffset.Hours):$($localTz.BaseUtcOffset.Minutes)"
     }
 
-    $dtFix = $utcDt + $localTz.BaseUtcOffset
+    $dtFix = $respData.dt + $localTz.BaseUtcOffset
 
     if ($isDebugMode)
     {
