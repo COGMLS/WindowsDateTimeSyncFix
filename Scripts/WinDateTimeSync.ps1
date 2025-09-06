@@ -68,7 +68,7 @@ param
                 Mandatory = $false
                 )]
     [uint]
-    $tries = 10,
+    $Tries = 10,
 
     # Enable the script experimental features
     [Parameter(
@@ -76,13 +76,13 @@ param
                 Mandatory = $false
                 )]
     [switch]
-    $experimental
+    $Experimental
 )
 
 # Version info:
 $__ScriptVersionNumber__ = @{
     "Major"     = 0;
-    "Minor"     = 8;
+    "Minor"     = 9;
     "Revision"  = 0
 }
 
@@ -127,6 +127,7 @@ class HttpResponseData
         $this.status = -2
         $this.hasDatetime = $false
         $this.httpCode = 0
+        $this.httpDescription = ""
     }
 
     [void]setStatus ([int]$status)
@@ -162,9 +163,9 @@ class HttpResponseData
 
 function IsElevated()
 {
-    $winUsrId = [System.Security.WindowsIdentity]::GetCurrent()
-    $winPrincipal = [System.Security.WindowsPrincipal]::new($winUsrId)
-    return $winPrincipal.IsInRole([System.Security.WindowsBuiltInRole]::Administrator)
+    $winUsrId = [System.Security.Principal.WindowsIdentity]::GetCurrent()
+    $winPrincipal = [System.Security.Principal.WindowsPrincipal]::new($winUsrId)
+    return $winPrincipal.IsInRole([System.Security.Principal.WindowsBuiltInRole]::Administrator)
 }
 
 function getDateTimeInfo
@@ -182,6 +183,7 @@ function getDateTimeInfo
 
     $finalUrl = $srvUrl+$localUrl
     $status = -1
+    $description = ""
     $resp = [HttpResponseData]::new()
 
     try
@@ -194,37 +196,48 @@ function getDateTimeInfo
         if ($request.StatusCode -eq 200)
         {
             $status = 0
+            $description = "Ok"
+        }
+        elseif ($request.StatusCode -ge 100 -and $request.StatusCode -lt 200)
+        {
+            $status = 1
+            $description = "Info"
         }
         elseif ($request.StatusCode -gt 200 -and $request.StatusCode -lt 300)
         {
-            $status = 1
+            $status = 2
+            $description = "Success"
         }
         elseif ($request.StatusCode -ge 300 -and $request.StatusCode -lt 400)
         {
-            $status = 2
+            $status = 3
+            $description = "Redirected"
         }
         elseif ($request.StatusCode -ge 400 -and $request.StatusCode -lt 500)
         {
-            $status = 3
+            $status = 4
+            $description = "Client Error"
         }
         else
         {
-            $status = 4
+            $status = 5
+            $description = "Server Error"
         }
         
         $resp.setDatetime($utcDt)
         $resp.setHttpStatusCode($request.StatusCode)
-        $resp.setHttpStatusDescription($request.StatusDescription)
+        #$resp.setHttpStatusDescription($request.StatusDescription)
         $resp.setResponseContent($request.Content)
     }
     catch
     {
-        $status = 5
-        $resp.setHttpStatusDescription("Unknown")
+        $status = 6
+        $description = "Unknown"
     }
     finally
     {
         $resp.setStatus($status)
+        $resp.setHttpStatusDescription($description)
     }
 
     return $resp
@@ -273,7 +286,7 @@ if (-not $hasAdminRights -and -not $Test)
     $isTestMode = $true
 }
 
-if ($experimental -and $isDebugMode -and $DEV_MODE)
+if ($Experimental -and $isDebugMode -and $DEV_MODE)
 {
     $isExperimentalMode = $true
 }
@@ -282,7 +295,7 @@ if ($experimental -and $isDebugMode -and $DEV_MODE)
 if ($isExperimentalMode)
 {
     # Check if custom connection tries are enabled:
-    if ($tries -lt 1)
+    if ($Tries -lt 1)
     {
         exit 8 # Invalid argument value in CLI
     }
@@ -314,7 +327,7 @@ PrintPresentation($true)
 
 if ($isExperimentalMode)
 {
-    $iMax = $tries
+    $iMax = $Tries
 }
 
 while ($i -le $iMax -and -not $successOp)
@@ -323,7 +336,7 @@ while ($i -le $iMax -and -not $successOp)
     [HttpResponseData]$respData = getDateTimeInfo -srvUrl $WorldTimeApiUrl -localUrl $UtcUrlPart
     if ($respData.status -eq 0)
     {
-        Write-Host -Object "Response at trying ($($i)/$($iMax))`nStatus: $($respData.status) Description: $($resp.httpDescription)"
+        Write-Host -Object "Response at trying ($($i)/$($iMax))`nStatus: $($respData.status) Description: $($respData.httpDescription)"
         $successOp = $true
         if ($isDebugMode)
         {
@@ -332,14 +345,21 @@ while ($i -le $iMax -and -not $successOp)
     }
     else
     {
-        Write-Host -Object "Retrying... ($($i)/$($iMax))`nStatus: $($respData.status) Description: $($resp.httpDescription)"
+        if ($i -eq 1)
+        {
+            Write-Host -Object "Trying connection... ($($i)/$($iMax))`nStatus: $($respData.status) Description: $($respData.httpDescription)"
+        }
+        else
+        {
+            Write-Host -Object "Retrying connection... ($($i)/$($iMax))`nStatus: $($respData.status) Description: $($respData.httpDescription)"
+        }
     }
     $i++
     Wait-Event -Timeout $sleepTimer
 }
 
 # Report the not successful operation:
-if (-not $successOp -and $respData.status -ne 5)
+if (-not $successOp -and $respData.status -ne 6)
 {
     Write-Host -Object "Fail to get the time information from server!"
     Write-Host -Object "Error: $($respData.status) | Description: $($respData.httpDescription)"
