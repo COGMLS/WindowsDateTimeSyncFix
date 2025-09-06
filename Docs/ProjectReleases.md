@@ -9,6 +9,12 @@
     <link rel="stylesheet" href="./CSS/ReleaseNotes.css">
 </head>
 <dl>
+    <!-- 0.9.0 (2025/09/05) -->
+    <dt><version-data>0.9.0</version-data> | Release Date: 2025/09/05</dt>
+    <dd>Added generic description for <code>HTTPResponseData</code></dd>
+    <dd>Minor changes on console output, while gathering server information</dd>
+    <dd><fix-alert>Fixed </fix-alert><code>IsElevated</code> method</dd>
+    <dd><fix-alert>Fixed </fix-alert> <code>HTTPResponseData</code> status description</dd>
     <!-- 0.8.0 (2025/07/24) -->
     <dt><version-data>0.8.0</version-data> | Release Date: 2025/07/24</dt>
     <dd>Added experimental custom number of connection tries</dd>
