@@ -124,8 +124,8 @@ $__ScriptVersionNumber__ = @{
 #
 # Constants:
 #
-[bool]$DEBUG_SCRIPT = $true
-[bool]$DEV_MODE = $true
+[bool]$DEBUG_SCRIPT = $false
+[bool]$DEV_MODE = $false
 [uint]$DEFAULT_CONNECTIONS_TRIES = 10
 
 #
@@ -438,7 +438,7 @@ if ($successOp -and $respData.hasDatetime)
         try
         {
             Set-Date $dtFix
-            Write-Host -Object "System's clock defined to $($dtFix) with successful!" -ForegroundColor Green
+            Write-Host -Object "System's clock defined to $($dtFix) with success!" -ForegroundColor Green
         }
         catch
         {
