@@ -71,7 +71,7 @@
 param
 (
     # Use the script without apply modification on your system.
-    # If the script is not been execute with Administrator Rights, the TestMode will be applied automatically.
+    # If the script is not execute with Administrator Rights, the TestMode will be applied automatically.
     [Parameter(
                 Position = 0,
                 Mandatory = $false
