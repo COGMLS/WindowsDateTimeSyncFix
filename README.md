@@ -1,8 +1,8 @@
 # Windows Date Time Sync Fix
 
-Windows Date Time Synchronization Fix is a solution created to fix the Windows 10 and Windows 11 clock (time and date) sync. This solution fixes the date and time based on local timezone configuration, acquiring from an open server (worldtimeapi.org) the UTC date. Using the local timezone, it calculates the difference and applies the correct values into Windows clock, fixing the outdated Windows clock.
+Windows Date Time Synchronization Fix is a solution created to fix the Windows 10 and Windows 11 clock (time and date) sync. This solution fixes the date and time based on local time zone configuration, getting from an open server (worldtimeapi.org) the UTC date. Using the local time zone, it calculates the difference and applies the correct values into Windows clock, fixing the outdated Windows clock.
 
-To force a date and time sync on your Windows, execute your Python with **administrator rights**, otherwise it will fail.
+To force a date and time sync on your Windows, execute your Windows PowerShell (version 4.0 or higher) or PowerShell with **administrator rights**. Otherwise, it will enter in test mode, and no change will be applied.
 
 > [!IMPORTANT]
 > This script does not send any personal data to the server and does not save any data from the internet.
@@ -10,41 +10,42 @@ To force a date and time sync on your Windows, execute your Python with **admini
 > [!NOTE]
 > The connection with the server may need multiple tries.
 
+> [!WARNING]
+> Originally this solution was designed to use a Python 3 script and was recreated to work directly with PowerShell features, bringing more performance and less chances to make a significant delta time between the acquired time from server and processed time to apply on Windows Clock. The original Python script has deprecated and is archived [here](/Scripts/Archived).
+
 ## Using the script:
 
-To use the script is just necessary to execute with Python 3 and have an internet connection to be able to communicate with the server. With you want to test the script before applying any modification use the `-test` command line.
+To use the script is just necessary to execute it with **Windows PowerShell** or the **PowerShell** console and have an internet connection to be able to communicate with the server. With you want to test the script without applying any modification, use the `-Test` on command line.
 
-Example to sync and apply the correct date and time (Note: The captured console output is in Brazilian Portuguese format. The output will depend on your system regional settings):
+Example to synchronize and apply the correct date and time (Note: The captured console output is in Brazilian Portuguese format. The output will depend on your system regional settings):
 
 ```
-python3 WinDateTimeSync.py
+& .\WinDateTimeSync.ps1
 
-Windows Date Time Sync - 0.7.1
+Windows Date Time Sync - 1.0.0
 -----------------------------------------------------------------
-Retrying... (1/10)
-Status: 0 Reason: OK
+Trying connection... (1/10)
+Status: 0 Description: OK
 
-Setting correct date and time on Windows Clock...
-
-
-segunda-feira, 14 de julho de 2025 18:49:54
-Windows clock set to:
-segunda-feira, 14 de julho de 2025 18:49:54
+quarta-feira, 10 de setembro de 2025 15:45:48
+System's clock defined to 09/10/2025 15:45:48 with success!
 ```
 
 ### Script commands:
 
-The script has a help command line that can be accessed with parameters: `-?`, `-h` or `-help`. All commands are case-insensitive.
+The script has a help command line that can be accessed with the cmdlet `Get-Help`:
+```PowerShell
+# Assuming the current working directory has the script:
+Get-Help .\WinDateTimeSync.ps1
+```
 
 | Command(s) | Description | Notes |
 | ---------- | ----------- | ----- |
-| -help -h -? | Access the command line help |  |
-| -test | Use the script without applying modification on your system |  |
-| -debug | Enable the script debug mode, showing processed data and status code |  |
-| -tries=<value> | Set a custom number of tries to connect with server (Default is 10) | Any value set value below then one will return error 8. **This is an experimental parameter** |
-| -pwsh | Force to use PowerShell and not Windows PowerShell | Windows only came with Windows PowerShell. Using this parameter when your computer does not have the PowerShell installed, will result in an error |
-| --experimental | Enable the script experimental features | Using this parameter may lead to unexpected behavior |
-| --bypass-win-ver | Bypass Windows minimum version to execute the script | This may lead to unexpected behavior |
+| Test | Use the script without applying modification on your system | If the script is not execute with Administrator Rights, the TestMode will be applied automatically. |
+| DebugScript | Enable the script debug mode, showing processed data and status code |  |
+| Tries <value> | Set a custom number of tries to connect with server (Default is 10) | Any value set value below then one will return error 8 |
+| Experimental | Enable the script experimental features | Using this parameter may lead to unexpected behavior |
+| Info | Show extra information about the script procedures | Using this parameter will enable some verbose information output, but not all. To see all detailed information, use `-Verbose` and/or `-DebugScript` parameters |
 
 ## Documentation:
 
@@ -62,34 +63,40 @@ The script has a help command line that can be accessed with parameters: `-?`, `
     <link rel="stylesheet" href="./CSS/ReleaseNotes.css">
 </head>
 <dl>
-    <!-- 0.7.1 (2025/07/14) -->
-    <dt><version-data>0.7.1</version-data> | Release Date: 2025/07/14</dt>
-    <dd>Changed PowerShell script to use exit by default. Now PowerShell script will only show to return value when DebugMode is True</dd>
-    <dd>Disabled <code>DEV_MODE</code></dd>
-    <dd>Added remove temporary PowerShell script file</dd>
-    <dd><strong>The script passed in all tests to change and update the Windows date and time correctly</strong></dd>
-    <!-- 0.7.0 (2025/06/26) -->
-    <dt><version-data>0.7.0</version-data> | Release Date: 2025/06/26</dt>
+    <!-- 1.0.0 (2025/09/10) -->
+    <dt><version-data>1.0.0</version-data> | Release Date: 2025/09/10</dt>
+    <dd>Added new comments and documentation for the PowerShell script</dd>
+    <dd>Added new help examples inside the script's help</dd>
+    <dd>Added <code>Info</code> parameter to print some information about the operations. (This parameter brings less information output than <code>Verbose</code> parameter)</dd>
+    <dd>Promoted custom connection tries to stable features</dd>
+    <dd>Small changes on cli check</dd>
+    <!-- 0.9.0 (2025/09/05) -->
+    <dt><version-data>0.9.0</version-data> | Release Date: 2025/09/05</dt>
+    <dd>Added generic description for <code>HTTPResponseData</code></dd>
+    <dd>Minor changes on console output, while gathering server information</dd>
+    <dd><fix-alert>Fixed </fix-alert><code>IsElevated</code> method</dd>
+    <dd><fix-alert>Fixed </fix-alert> <code>HTTPResponseData</code> status description</dd>
+    <!-- 0.8.0 (2025/07/24) -->
+    <dt><version-data>0.8.0</version-data> | Release Date: 2025/07/24</dt>
     <dd>Added experimental custom number of connection tries</dd>
-    <dd>Added experimental force PowerShell and not Windows PowerShell</dd>
     <dd>Added test mode on PowerShell script</dd>
-    <dd>Enabled <code>Set-Date</code> on PowerShell script</dd>
-    <dd>Added <code>try-except</code> blocks on calling PowerShell</dd>
-    <dd><fix-alert>Fixed</fix-alert> testing Windows build value</dd>
-    <dd><fix-alert>Fixed</fix-alert> PowerShell script require minimum version</dd>
-    <!-- 0.6.0 (2025/06/23) -->
-    <dt><version-data>0.6.0</version-data> | Release Date: 2025/06/23</dt>
-    <dd>Added more precise debug information</dd>
-    <dd>Added new command line option</dd>
-    <dd>Added DEV_MODE constant</dd>
+    <dd>Added debug information output</dd>
     <dd>Added platform test</dd>
-    <dd>Added Windows version test</dd>
-    <dd>Changed way to call PowerShell</dd>
-    <dd><fix-alert>Fixed</fix-alert> timezone information on Windows platforms</dd>
-    <dd><fix-alert>Fixed</fix-alert> applying corrected time</dd>
-    <dd><fix-alert>Fixed</fix-alert> minimum PowerShell version</dd>
-    <dd><fix-alert>Fixed</fix-alert> missing admin rights check on PowerShell script</dd>
-    <dd><fix-alert>Fixed</fix-alert> keep admin privileges when calling PowerShell</dd>
+    <dd>Added main entry</dd>
+    <dd>Added script presentation</dd>
+    <dd>Added exit with error codes</dd>
+    <dd>Added variable controls</dd>
+    <dd>Added help command line</dd>
+    <dd>Added cli test for debug and experimental options</dd>
+    <dd>Added date and time extraction in UTC format from json content</dd>
+    <dd>Added local date and time getter information</dd>
+    <dd>Added local timezone configuration extraction</dd>
+    <dd>Added delta date and time between UTC server and local information</dd>
+    <dd>Added sum of delta time with local time</dd>
+    <dd>Added <code>HttpResponseData</code> class</dd>
+    <dd>Added <code>getDateTimeInfo</code> method</dd>
+    <dd>Added loop to try and get the date time information</dd>
+    <dd><strong>This version is based on all implementations made in deprecated Python script</strong></dd>
 </dl>
 
 # License
