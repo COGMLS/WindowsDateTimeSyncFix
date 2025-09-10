@@ -9,6 +9,13 @@
     <link rel="stylesheet" href="./CSS/ReleaseNotes.css">
 </head>
 <dl>
+    <!-- 1.0.0 (2025/09/10) -->
+    <dt><version-data>1.0.0</version-data> | Release Date: 2025/09/10</dt>
+    <dd>Added new comments and documentation for the PowerShell script</dd>
+    <dd>Added new help examples inside the script's help</dd>
+    <dd>Added <code>Info</code> parameter to print some information about the operations. (This parameter brings less information output than <code>Verbose</code> parameter)</dd>
+    <dd>Promoted custom connection tries to stable features</dd>
+    <dd>Small changes on cli check</dd>
     <!-- 0.9.0 (2025/09/05) -->
     <dt><version-data>0.9.0</version-data> | Release Date: 2025/09/05</dt>
     <dd>Added generic description for <code>HTTPResponseData</code></dd>

@@ -13,11 +13,11 @@ This file contains the project information, including implementations, planned f
 - Experimental feature control
 - Test for administrator rights
 - Better information output
+- Add comments and documentation
+- Final tests and fixes to experimental components
 
 ### Ongoing Implementations/Tests:
 
-- Add comments and documentation
-- Final tests and fixes to experimental components
 
 ### Future Implementations/Tests:
 
