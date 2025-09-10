@@ -4,7 +4,7 @@
  # Author: Matheus Lopes Silvati
  # Date: 2025/07/24
  # ------------------------------------
- # Version: 0.8.0
+ # Version: 1.0.0
  # ------------------------------------
  # Obs: N/A
 ##########################################################>
@@ -22,21 +22,47 @@
     
     This behavior has been observed on Windows 10 and 11, and can make the applications those
     need a synced date and time with server fail. This script helps to avoid this situation.
+.INPUTS
+    The script does not receive any inputs
+.OUTPUTS
+    The script can exit with error codes:
+
+    0: Successful. No exception or fail was detected
+    1: <Error Code Deprecated/Removed>
+    2: Script reached maximum of tries to get the server information, but no response was sent
+    3: PowerShell script failed to set the date
+    4: Fail to get server info, but successfully processed the getDateTimeInfo method
+    5: Platform incompatible
+    6: <Error Code Deprecated/Removed>
+    7: <Error Code Deprecated/Removed>
+    8: Invalid argument value
+
 .NOTES
     To make possible the Windows Clock fixed, you must execute the script as Administrator.
-    Otherwise it only will show the correct date and time from internet.
+    Otherwise, it will only show the correct date and time from internet.
 
     The connection with the server may need multiple tries.
 
     This script does not send any data to the internet. Only receive the correct date and time
     information.
 
-    This script was not supported in Linux.
+    This script was not designed to work on Linux.
 .LINK
     Repository link: https://github.com/COGMLS/WindowsDateTimeSyncFix
+    README file: https://github.com/COGMLS/WindowsDateTimeSyncFix/blob/master/README.md
 .EXAMPLE
-    Test-MyTestFunction -Verbose
-    Explanation of the function or its result. You can include multiple examples with additional .EXAMPLE lines
+    WinDateTimeSync.ps1 -Test
+    Test the Windows Date and Time Synchronization Fix script, without changing your system's settings.
+.EXAMPLE
+    WinDateTimeSync.ps1
+    Fix the Windows Clock synchronization contacting a time server and apply the correct local date and time to your system.
+
+    NOTE: It it necessary to execute as administrator to apply the correct date and time. Otherwise, it will have the same effect as using -Test parameter.
+.EXAMPLE
+    WinDateTimeSync.ps1 -Tries 5
+    Make a maximum of 5 tries to contact the server.
+
+    NOTE: The server connection may be more difficult to be stablish depending your network stability.
 #>
 
 #Requires -Version 4.0
@@ -76,13 +102,22 @@ param
                 Mandatory = $false
                 )]
     [switch]
-    $Experimental
+    $Experimental,
+
+    # Show extra information about the script procedures
+    # NOTE: Using this parameter will enable some verbose information output, but not all. To see all detailed information, use -Verbose and/or -DebugScript parameters.
+    [Parameter(
+                Position = 4,
+                Mandatory = $false
+                )]
+    [switch]
+    $Info
 )
 
 # Version info:
 $__ScriptVersionNumber__ = @{
-    "Major"     = 0;
-    "Minor"     = 9;
+    "Major"     = 1;
+    "Minor"     = 0;
     "Revision"  = 0
 }
 
@@ -286,26 +321,35 @@ if (-not $hasAdminRights -and -not $Test)
     $isTestMode = $true
 }
 
-if ($Experimental -and $isDebugMode -and $DEV_MODE)
+if ($Experimental)
 {
+    if ($DEV_MODE)
+    {
+        $isDebugMode = $true    # Force the debug mode when the script is in DevMode
+    }
     $isExperimentalMode = $true
+}
+
+# Check if custom connection tries are enabled:
+if ($Tries -lt 1)
+{
+    if ($Info -or $VerbosePreference)
+    {
+        Write-Host -Object "Invalid argument value on `"Tries`" parameter." -ForegroundColor Red
+    }
+    exit 8 # Invalid argument value in CLI
 }
 
 # Check for experimental features:
 if ($isExperimentalMode)
 {
-    # Check if custom connection tries are enabled:
-    if ($Tries -lt 1)
-    {
-        exit 8 # Invalid argument value in CLI
-    }
 }
 
 # Verify platform:
 if (-not $IsWindows -and -not $isDebugMode)
 {
     Write-Error -Message "Current platform is not supported!`nTo test this script in other systems, use -test parameter."
-    exit 5
+    exit 5 # Platform incompatible
 }
 
 # Verify Windows version:
@@ -362,8 +406,11 @@ while ($i -le $iMax -and -not $successOp)
 if (-not $successOp -and $respData.status -ne 6)
 {
     Write-Host -Object "Fail to get the time information from server!"
-    Write-Host -Object "Error: $($respData.status) | Description: $($respData.httpDescription)"
-    exit 4 # Fail to get server info, but successful processed the getDateTimeInfo method
+    if ($info -or $VerbosePreference)
+    {
+        Write-Host -Object "Error: $($respData.status) | Description: $($respData.httpDescription)"
+    }
+    exit 4 # Fail to get server info, but successfully processed the getDateTimeInfo method
 }
 
 # On successful operation, apply the correct date and time:
@@ -372,7 +419,7 @@ if ($successOp -and $respData.hasDatetime)
     # Get the local timezone:
     $localTz = [System.TimeZoneInfo]::Local
 
-    if ($isDebugMode)
+    if ($isDebugMode -or $VerbosePreference)
     {
         Write-Host -Object "UTC server time: $($respData.dt)"
         Write-Host -Object "Local time: $(Get-Date)"
@@ -381,7 +428,7 @@ if ($successOp -and $respData.hasDatetime)
 
     $dtFix = $respData.dt + $localTz.BaseUtcOffset
 
-    if ($isDebugMode)
+    if ($isDebugMode -or $Info)
     {
         Write-Host -Object "Setting new system date and time to $($dtFix)"
     }
@@ -403,4 +450,4 @@ if ($successOp -and $respData.hasDatetime)
     exit 0 # No exception or fail was detected
 }
 
-exit 2 # Script reached maximum of tries to get the server information, but no response was send
+exit 2 # Script reached maximum of tries to get the server information, but no response was sent
