@@ -28,7 +28,7 @@ This file contains the project information, including implementations, planned f
 | :----- | :-----: | :--------------: | -----: |
 | 1 | Fail to convert the local date and time with timezone offset | A variable was missing. No workaround is necessary | **FIXED** |
 | 2 | No detailed information about status and description of fail or successful operation during server request |  | **FIXED** |
-| 3 | .NET instructions used in `ÌsElevated` method are resulting in error message: **InvalidOperation** | The scope address was missing `Principal` word | **FIXED** |
+| 3 | .NET instructions used in `IsElevated` method are resulting in error message: **InvalidOperation** | The scope address was missing `Principal` word | **FIXED** |
 
 ### Deprecated Features:
 
