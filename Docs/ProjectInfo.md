@@ -18,9 +18,12 @@ This file contains the project information, including implementations, planned f
 
 ### Ongoing Implementations/Tests:
 
+- Fix parameter `-Tries` uses incompatible datatype with Windows PowerShell (`uint`)
+- Fix parameter `-Tries` not working
 
 ### Future Implementations/Tests:
 
+- Add a custom timer between each server connection
 
 ### Known Bugs:
 
@@ -29,6 +32,8 @@ This file contains the project information, including implementations, planned f
 | 1 | Fail to convert the local date and time with timezone offset | A variable was missing. No workaround is necessary | **FIXED** |
 | 2 | No detailed information about status and description of fail or successful operation during server request |  | **FIXED** |
 | 3 | .NET instructions used in `IsElevated` method are resulting in error message: **InvalidOperation** | The scope address was missing `Principal` word | **FIXED** |
+| 4 | Parameter `-Tries` is not working as expected | ~~Avoid use this parameter while a fix is not available~~ | **FIXED** |
+| 5 | Parameter `-Tries` uses incompatible datatype with Windows PowerShell (`uint`) | ~~The use of `uint` datatype breaks the compatibility with Windows PowerShell, use the PowerShell to avoid script fail~~ | **FIXED** |
 
 ### Deprecated Features:
 
