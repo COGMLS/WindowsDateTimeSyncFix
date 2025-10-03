@@ -93,7 +93,7 @@ param
                 Position = 2,
                 Mandatory = $false
                 )]
-    [uint]
+    [int]
     $Tries = 10,
 
     # Enable the script experimental features
@@ -118,7 +118,7 @@ param
 $__ScriptVersionNumber__ = @{
     "Major"     = 1;
     "Minor"     = 0;
-    "Revision"  = 0
+    "Revision"  = 1
 }
 
 #
@@ -126,7 +126,7 @@ $__ScriptVersionNumber__ = @{
 #
 [bool]$DEBUG_SCRIPT = $false
 [bool]$DEV_MODE = $false
-[uint]$DEFAULT_CONNECTIONS_TRIES = 10
+[int]$DEFAULT_CONNECTIONS_TRIES = 10
 
 #
 # Control Variables:
@@ -330,12 +330,16 @@ if ($Experimental)
     $isExperimentalMode = $true
 }
 
-# Check if custom connection tries are enabled:
+# Check if custom connection tries uses a compatible value:
 if ($Tries -lt 1)
 {
     if ($Info -or $VerbosePreference)
     {
         Write-Host -Object "Invalid argument value on `"Tries`" parameter." -ForegroundColor Red
+        if ($Tries -lt 0)
+        {
+            Write-Host -Object "Parameter `"Tries`" must receive a positive value! Using default value." -ForegroundColor White -BackgroundColor Red
+        }
     }
     exit 8 # Invalid argument value in CLI
 }
@@ -364,12 +368,12 @@ if ($IsWindows)
 
 PrintPresentation($true)
 
-[uint]$i = 1
-[uint]$iMax = $DEFAULT_CONNECTIONS_TRIES
+[int]$i = 1
+[int]$iMax = $DEFAULT_CONNECTIONS_TRIES
 [bool]$successOp = $false
 [int]$sleepTimer = 3
 
-if ($isExperimentalMode)
+if ($Tries -ne $DEFAULT_CONNECTIONS_TRIES)
 {
     $iMax = $Tries
 }
