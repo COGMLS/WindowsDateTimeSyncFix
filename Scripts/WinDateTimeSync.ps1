@@ -2,9 +2,9 @@
  # Windows Date and Time Sync script for PowerShell
  # ---------------------------------------------------
  # Author: Matheus Lopes Silvati
- # Date: 2025/07/24
+ # Date: 2025/10/29
  # ------------------------------------
- # Version: 1.0.0
+ # Version: 1.0.2
  # ------------------------------------
  # Obs: N/A
 ##########################################################>
@@ -118,7 +118,7 @@ param
 $__ScriptVersionNumber__ = @{
     "Major"     = 1;
     "Minor"     = 0;
-    "Revision"  = 1
+    "Revision"  = 2
 }
 
 #
@@ -350,16 +350,14 @@ if ($isExperimentalMode)
 }
 
 # Verify platform:
+# Check the PSVersionTable first, to avoid incompatibility with $IsWindows variable:
+if ($PSVersionTable.PSVersion.Major -gt 5)
+{
 if (-not $IsWindows -and -not $isDebugMode)
 {
     Write-Error -Message "Current platform is not supported!`nTo test this script in other systems, use -test parameter."
     exit 5 # Platform incompatible
 }
-
-# Verify Windows version:
-if ($IsWindows)
-{
-
 }
 
 #
