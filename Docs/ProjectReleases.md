@@ -14,6 +14,7 @@
     <dd><fix-alert>Fixed </fix-alert> incompatibility with <strong>Windows PowerShell</strong> when reaching the variable <code>IsWindows</code>, which is available only on PowerShell</dd>
     <dd>Added experimental parameter <code>Wait</code>. <strong>NOTE: This feature is under development</strong></dd>
     <dd><bug-alert>[BUG]</bug-alert> Executing the script on <strong>Windows PowerShell</strong> will not work as expected. The </dd>
+    <dd><strong>Updated minimum PowerShell version requirement to 5.0</strong> This fixes a minimum requirement for use classes on PowerShell.</dd>
     <!-- 1.0.1 (2025/10/03) -->
     <dt><version-data>1.0.1</version-data> | Release Date: 2025/10/03</dt>
     <dd><fix-alert>Fixed </fix-alert>parameter <code>Tries</code> not working on Windows PowerShell</dd>
