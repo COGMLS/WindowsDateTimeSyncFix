@@ -10,7 +10,7 @@ To force a date and time sync on your Windows, execute your Windows PowerShell (
 > [!NOTE]
 > The connection with the server may need multiple tries.
 
-> [!WARNING]
+> [!INFO]
 > Originally this solution was designed to use a Python 3 script and was recreated to work directly with PowerShell features, bringing more performance and less chances to make a significant delta time between the acquired time from server and processed time to apply on Windows Clock. The original Python script has deprecated and is archived [here](/Scripts/Archived).
 
 ## Using the script:
@@ -20,15 +20,15 @@ To use the script is just necessary to execute it with **Windows PowerShell** or
 Example to synchronize and apply the correct date and time (Note: The captured console output is in Brazilian Portuguese format. The output will depend on your system regional settings):
 
 ```
-& .\WinDateTimeSync.ps1
+C:\Users\admin\Scripts> & .\WinDateTimeSync.ps1
 
-Windows Date Time Sync - 1.0.0
+Windows Date Time Sync - 1.0.2
 -----------------------------------------------------------------
 Trying connection... (1/10)
 Status: 0 Description: OK
 
-quarta-feira, 10 de setembro de 2025 15:45:48
-System's clock defined to 09/10/2025 15:45:48 with success!
+quarta-feira, 29 de outubro de 2025 15:36:25
+System's clock defined to 10/29/2025 15:36:25 with success!
 ```
 
 ### Script commands:
@@ -63,6 +63,11 @@ Get-Help .\WinDateTimeSync.ps1
     <link rel="stylesheet" href="./CSS/ReleaseNotes.css">
 </head>
 <dl>
+    <!-- 1.0.2 (2025/10/29) -->
+    <dt><version-data>1.0.2</version-data> | Release Date: 2025/10/29</dt>
+    <dd><fix-alert>Fixed </fix-alert> incompatibility with <strong>Windows PowerShell</strong> when reaching the variable <code>IsWindows</code>, which is available only on PowerShell</dd>
+    <dd>Added experimental parameter <code>Wait</code>. <strong>NOTE: This feature is under development</strong></dd>
+    <dd><bug-alert>[BUG]</bug-alert> Executing the script on <strong>Windows PowerShell</strong> will not work as expected. The </dd>
     <!-- 1.0.1 (2025/10/03) -->
     <dt><version-data>1.0.1</version-data> | Release Date: 2025/10/03</dt>
     <dd><fix-alert>Fixed </fix-alert>parameter <code>Tries</code> not working on Windows PowerShell</dd>

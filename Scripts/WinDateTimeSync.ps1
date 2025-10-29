@@ -2,9 +2,9 @@
  # Windows Date and Time Sync script for PowerShell
  # ---------------------------------------------------
  # Author: Matheus Lopes Silvati
- # Date: 2025/07/24
+ # Date: 2025/10/29
  # ------------------------------------
- # Version: 1.0.0
+ # Version: 1.0.2
  # ------------------------------------
  # Obs: N/A
 ##########################################################>
@@ -111,14 +111,23 @@ param
                 Mandatory = $false
                 )]
     [switch]
-    $Info
+    $Info,
+
+    # Make a custom wait after server response. The default is to wait for 3 seconds.
+    # WARNING: This is an experimental feature, thi may be not fully implemented or not stable. To use this feature, use with '-Experimental' parameter.
+    [Parameter(
+                Position = 5,
+                Mandatory = $false
+                )]
+    [int]
+    $Wait = 3
 )
 
 # Version info:
 $__ScriptVersionNumber__ = @{
     "Major"     = 1;
     "Minor"     = 0;
-    "Revision"  = 1
+    "Revision"  = 2
 }
 
 #
@@ -350,16 +359,14 @@ if ($isExperimentalMode)
 }
 
 # Verify platform:
-if (-not $IsWindows -and -not $isDebugMode)
+# Check the PSVersionTable first, to avoid incompatibility with $IsWindows variable:
+if ($PSVersionTable.PSVersion.Major -gt 5)
 {
-    Write-Error -Message "Current platform is not supported!`nTo test this script in other systems, use -test parameter."
-    exit 5 # Platform incompatible
-}
-
-# Verify Windows version:
-if ($IsWindows)
-{
-
+    if (-not $IsWindows -and -not $isDebugMode)
+    {
+        Write-Error -Message "Current platform is not supported!`nTo test this script in other systems, use -test parameter."
+        exit 5 # Platform incompatible
+    }
 }
 
 #

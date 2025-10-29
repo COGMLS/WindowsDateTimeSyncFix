@@ -15,15 +15,15 @@ This file contains the project information, including implementations, planned f
 - Better information output
 - Add comments and documentation
 - Final tests and fixes to experimental components
-
-### Ongoing Implementations/Tests:
-
 - Fix parameter `-Tries` uses incompatible datatype with Windows PowerShell (`uint`)
 - Fix parameter `-Tries` not working
 
-### Future Implementations/Tests:
+### Ongoing Implementations/Tests:
 
 - Add a custom timer between each server connection
+- Fix **Windows PowerShell** request inconsistency
+
+### Future Implementations/Tests:
 
 ### Known Bugs:
 
@@ -34,6 +34,8 @@ This file contains the project information, including implementations, planned f
 | 3 | .NET instructions used in `IsElevated` method are resulting in error message: **InvalidOperation** | The scope address was missing `Principal` word | **FIXED** |
 | 4 | Parameter `-Tries` is not working as expected | ~~Avoid use this parameter while a fix is not available~~ | **FIXED** |
 | 5 | Parameter `-Tries` uses incompatible datatype with Windows PowerShell (`uint`) | ~~The use of `uint` datatype breaks the compatibility with Windows PowerShell, use the PowerShell to avoid script fail~~ | **FIXED** |
+| 6 | On Windows PowerShell, there is a incompatibility issue caused by `$IsWindows` PowerShell variable. | ~~To avoid this incompatibility, use the PowerShell instead the Windows PowerShell version~~ | **FIXED** |
+| 7 | Request from server is not working as expected on **Windows PowerShell** | On PowerShell is working as expected | Not fixed |
 
 ### Deprecated Features:
 
