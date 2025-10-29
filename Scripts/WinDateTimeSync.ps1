@@ -111,7 +111,16 @@ param
                 Mandatory = $false
                 )]
     [switch]
-    $Info
+    $Info,
+
+    # Make a custom wait after server response. The default is to wait for 3 seconds.
+    # WARNING: This is an experimental feature, thi may be not fully implemented or not stable. To use this feature, use with '-Experimental' parameter.
+    [Parameter(
+                Position = 5,
+                Mandatory = $false
+                )]
+    [int]
+    $Wait = 3
 )
 
 # Version info:
@@ -353,11 +362,11 @@ if ($isExperimentalMode)
 # Check the PSVersionTable first, to avoid incompatibility with $IsWindows variable:
 if ($PSVersionTable.PSVersion.Major -gt 5)
 {
-if (-not $IsWindows -and -not $isDebugMode)
-{
-    Write-Error -Message "Current platform is not supported!`nTo test this script in other systems, use -test parameter."
-    exit 5 # Platform incompatible
-}
+    if (-not $IsWindows -and -not $isDebugMode)
+    {
+        Write-Error -Message "Current platform is not supported!`nTo test this script in other systems, use -test parameter."
+        exit 5 # Platform incompatible
+    }
 }
 
 #
