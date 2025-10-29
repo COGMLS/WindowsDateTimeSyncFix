@@ -2,7 +2,7 @@
 
 Windows Date Time Synchronization Fix is a solution created to fix the Windows 10 and Windows 11 clock (time and date) sync. This solution fixes the date and time based on local time zone configuration, getting from an open server (worldtimeapi.org) the UTC date. Using the local time zone, it calculates the difference and applies the correct values into Windows clock, fixing the outdated Windows clock.
 
-To force a date and time sync on your Windows, execute your Windows PowerShell (version 4.0 or higher) or PowerShell with **administrator rights**. Otherwise, it will enter in test mode, and no change will be applied.
+To force a date and time sync on your Windows, execute your Windows PowerShell (version 5.0 or higher) or PowerShell with **administrator rights**. Otherwise, it will enter in test mode, and no change will be applied.
 
 > [!IMPORTANT]
 > This script does not send any personal data to the server and does not save any data from the internet.
@@ -68,6 +68,7 @@ Get-Help .\WinDateTimeSync.ps1
     <dd><fix-alert>Fixed </fix-alert> incompatibility with <strong>Windows PowerShell</strong> when reaching the variable <code>IsWindows</code>, which is available only on PowerShell</dd>
     <dd>Added experimental parameter <code>Wait</code>. <strong>NOTE: This feature is under development</strong></dd>
     <dd><bug-alert>[BUG]</bug-alert> Executing the script on <strong>Windows PowerShell</strong> will not work as expected. The </dd>
+    <dd><strong>Updated minimum PowerShell version requirement to 5.0</strong> This fixes a minimum requirement for use classes on PowerShell.</dd>
     <!-- 1.0.1 (2025/10/03) -->
     <dt><version-data>1.0.1</version-data> | Release Date: 2025/10/03</dt>
     <dd><fix-alert>Fixed </fix-alert>parameter <code>Tries</code> not working on Windows PowerShell</dd>

@@ -65,7 +65,7 @@
     NOTE: The server connection may be more difficult to be stablish depending your network stability.
 #>
 
-#Requires -Version 4.0
+#Requires -Version 5.0
 
 [CmdletBinding()]
 param
