@@ -9,6 +9,11 @@
     <link rel="stylesheet" href="./CSS/ReleaseNotes.css">
 </head>
 <dl>
+    <!-- 1.0.2 (2025/10/29) -->
+    <dt><version-data>1.0.2</version-data> | Release Date: 2025/10/29</dt>
+    <dd><fix-alert>Fixed </fix-alert> incompatibility with <strong>Windows PowerShell</strong> when reaching the variable <code>IsWindows</code>, which is available only on PowerShell</dd>
+    <dd>Added experimental parameter <code>Wait</code>. <strong>NOTE: This feature is under development</strong></dd>
+    <dd><bug-alert>[BUG]</bug-alert> Executing the script on <strong>Windows PowerShell</strong> will not work as expected. The </dd>
     <!-- 1.0.1 (2025/10/03) -->
     <dt><version-data>1.0.1</version-data> | Release Date: 2025/10/03</dt>
     <dd><fix-alert>Fixed </fix-alert>parameter <code>Tries</code> not working on Windows PowerShell</dd>
