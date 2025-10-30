@@ -10,7 +10,7 @@ To force a date and time sync on your Windows, execute your Windows PowerShell (
 > [!NOTE]
 > The connection with the server may need multiple tries.
 
-> [!INFO]
+> [!NOTE]
 > Originally this solution was designed to use a Python 3 script and was recreated to work directly with PowerShell features, bringing more performance and less chances to make a significant delta time between the acquired time from server and processed time to apply on Windows Clock. The original Python script has deprecated and is archived [here](/Scripts/Archived).
 
 ## Using the script:
