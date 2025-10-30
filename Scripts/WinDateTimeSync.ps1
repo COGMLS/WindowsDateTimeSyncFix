@@ -356,6 +356,24 @@ if ($Tries -lt 1)
 # Check for experimental features:
 if ($isExperimentalMode)
 {
+    if ($DEV_MODE)
+    {
+        if ($Wait -lt 1)
+        {
+            if ($Info -or $VerbosePreference)
+            {
+                if ($Wait -lt 0)
+                {
+                    Write-Host -Object "Invalid wait timer. Only positive values are accepted."
+                }
+                else
+                {
+                    Write-Host -Object "The minimum value acceptable for 'Wait' parameter is 1 second."
+                }
+            }
+            exit 8 # Invalid argument value in CLI
+        }
+    }
 }
 
 # Verify platform:
@@ -379,6 +397,16 @@ PrintPresentation($true)
 [int]$iMax = $DEFAULT_CONNECTIONS_TRIES
 [bool]$successOp = $false
 [int]$sleepTimer = 3
+
+# Experimental feature, only focus when DEV_MODE is enabled at this moment.
+if ($isExperimentalMode -and $DEV_MODE)
+{
+    # Set the custom wait timer
+    if ($Wait -ne $sleepTimer)
+    {
+        $sleepTimer = $Wait
+    }
+}
 
 if ($Tries -ne $DEFAULT_CONNECTIONS_TRIES)
 {
