@@ -2,9 +2,9 @@
  # Windows Date and Time Sync script for PowerShell
  # ---------------------------------------------------
  # Author: Matheus Lopes Silvati
- # Date: 2025/10/29
+ # Date: 2026/07/15
  # ------------------------------------
- # Version: 1.0.2
+ # Version: 1.0.3
  # ------------------------------------
  # Obs: N/A
 ##########################################################>
@@ -127,7 +127,7 @@ param
 $__ScriptVersionNumber__ = @{
     "Major"     = 1;
     "Minor"     = 0;
-    "Revision"  = 2
+    "Revision"  = 3
 }
 
 #
@@ -150,8 +150,8 @@ $__ScriptVersionNumber__ = @{
 # Script Global Variables:
 #
 
-$WorldTimeApiUrl = "worldtimeapi.org"
-$UtcUrlPart = "/api/timezone/Etc/UTC"
+$ServerWorldTimeUrl = "https://timeapi.io"
+$ServerApiUrl = "/api/v1/time/current/utc"
 
 #
 # Script Classes:
@@ -222,10 +222,10 @@ function getDateTimeInfo
         
         [Parameter(Position = 1, Mandatory = $true)]
         [string]
-        $localUrl
+        $serverApi
     )
 
-    $finalUrl = $srvUrl+$localUrl
+    $finalUrl = $srvUrl+$serverApi
     $status = -1
     $description = ""
     $resp = [HttpResponseData]::new()
@@ -235,7 +235,7 @@ function getDateTimeInfo
         $request = Invoke-WebRequest -Uri $finalUrl -ConnectionTimeoutSeconds 30
         $convertedJson = ConvertFrom-Json $request
 
-        $utcDt = ($convertedJson.utc_datetime).ToUniversalTime()
+        $utcDt = ($convertedJson.utc_time).ToUniversalTime()
 
         if ($request.StatusCode -eq 200)
         {
@@ -356,6 +356,24 @@ if ($Tries -lt 1)
 # Check for experimental features:
 if ($isExperimentalMode)
 {
+    if ($DEV_MODE)
+    {
+        if ($Wait -lt 1)
+        {
+            if ($Info -or $VerbosePreference)
+            {
+                if ($Wait -lt 0)
+                {
+                    Write-Host -Object "Invalid wait timer. Only positive values are accepted."
+                }
+                else
+                {
+                    Write-Host -Object "The minimum value acceptable for 'Wait' parameter is 1 second."
+                }
+            }
+            exit 8 # Invalid argument value in CLI
+        }
+    }
 }
 
 # Verify platform:
@@ -380,6 +398,16 @@ PrintPresentation($true)
 [bool]$successOp = $false
 [int]$sleepTimer = 3
 
+# Experimental feature, only focus when DEV_MODE is enabled at this moment.
+if ($isExperimentalMode -and $DEV_MODE)
+{
+    # Set the custom wait timer
+    if ($Wait -ne $sleepTimer)
+    {
+        $sleepTimer = $Wait
+    }
+}
+
 if ($Tries -ne $DEFAULT_CONNECTIONS_TRIES)
 {
     $iMax = $Tries
@@ -388,7 +416,7 @@ if ($Tries -ne $DEFAULT_CONNECTIONS_TRIES)
 while ($i -le $iMax -and -not $successOp)
 {
     # Get the response data from the server and convert it to HttpResponseData object:
-    [HttpResponseData]$respData = getDateTimeInfo -srvUrl $WorldTimeApiUrl -localUrl $UtcUrlPart
+    [HttpResponseData]$respData = getDateTimeInfo -srvUrl $ServerWorldTimeUrl -serverApi $ServerApiUrl
     if ($respData.status -eq 0)
     {
         Write-Host -Object "Response at trying ($($i)/$($iMax))`nStatus: $($respData.status) Description: $($respData.httpDescription)"
