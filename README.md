@@ -1,6 +1,6 @@
 # Windows Date Time Sync Fix
 
-Windows Date Time Synchronization Fix is a solution created to fix the Windows 10 and Windows 11 clock (time and date) sync. This solution fixes the date and time based on local time zone configuration, getting from an open server (worldtimeapi.org) the UTC date. Using the local time zone, it calculates the difference and applies the correct values into Windows clock, fixing the outdated Windows clock.
+Windows Date Time Synchronization Fix is a solution created to fix the Windows 10 and Windows 11 clock (time and date) sync. This solution fixes the date and time based on local time zone configuration, getting from an open server (https://timeapi.io) the UTC date. Using the local time zone, it calculates the difference and applies the correct values into Windows clock, fixing the outdated Windows clock.
 
 To force a date and time sync on your Windows, execute your Windows PowerShell (version 5.0 or higher) or PowerShell with **administrator rights**. Otherwise, it will enter in test mode, and no change will be applied.
 
