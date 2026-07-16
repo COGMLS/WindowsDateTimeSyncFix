@@ -150,8 +150,8 @@ $__ScriptVersionNumber__ = @{
 # Script Global Variables:
 #
 
-$WorldTimeApiUrl = "worldtimeapi.org"
-$UtcUrlPart = "/api/timezone/Etc/UTC"
+$ServerWorldTimeUrl = "worldtimeapi.org"
+$ServerApiUrl = "/api/timezone/Etc/UTC"
 
 #
 # Script Classes:
@@ -222,10 +222,10 @@ function getDateTimeInfo
         
         [Parameter(Position = 1, Mandatory = $true)]
         [string]
-        $localUrl
+        $serverApi
     )
 
-    $finalUrl = $srvUrl+$localUrl
+    $finalUrl = $srvUrl+$serverApi
     $status = -1
     $description = ""
     $resp = [HttpResponseData]::new()
@@ -416,7 +416,7 @@ if ($Tries -ne $DEFAULT_CONNECTIONS_TRIES)
 while ($i -le $iMax -and -not $successOp)
 {
     # Get the response data from the server and convert it to HttpResponseData object:
-    [HttpResponseData]$respData = getDateTimeInfo -srvUrl $WorldTimeApiUrl -localUrl $UtcUrlPart
+    [HttpResponseData]$respData = getDateTimeInfo -srvUrl $ServerWorldTimeUrl -serverApi $ServerApiUrl
     if ($respData.status -eq 0)
     {
         Write-Host -Object "Response at trying ($($i)/$($iMax))`nStatus: $($respData.status) Description: $($respData.httpDescription)"
