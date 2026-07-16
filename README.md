@@ -63,6 +63,9 @@ Get-Help .\WinDateTimeSync.ps1
     <link rel="stylesheet" href="./CSS/ReleaseNotes.css">
 </head>
 <dl>
+    <!-- 1.0.3 (2026/07/15) -->
+    <dt><version-data>1.0.3</version-data> | Release Date: 2026/07/15</dt>
+    <dd><fix-alert>Fixed </fix-alert> server communication</dd>
     <!-- 1.0.2 (2025/10/29) -->
     <dt><version-data>1.0.2</version-data> | Release Date: 2025/10/29</dt>
     <dd><fix-alert>Fixed </fix-alert> incompatibility with <strong>Windows PowerShell</strong> when reaching the variable <code>IsWindows</code>, which is available only on PowerShell</dd>
@@ -116,7 +119,7 @@ A copy of the license file is available [here](./LICENSE.txt)
 
 MIT License
 
-Copyright (c) 2025 Matheus Lopes Silvati
+Copyright (c) 2025-2026 Matheus Lopes Silvati
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

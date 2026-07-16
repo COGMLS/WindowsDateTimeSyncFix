@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="./CSS/ReleaseNotes.css">
 </head>
 <dl>
+    <!-- 1.0.3 (2026/07/15) -->
+    <dt><version-data>1.0.3</version-data> | Release Date: 2026/07/15</dt>
+    <dd><fix-alert>Fixed </fix-alert> server communication</dd>
     <!-- 1.0.2 (2025/10/29) -->
     <dt><version-data>1.0.2</version-data> | Release Date: 2025/10/29</dt>
     <dd><fix-alert>Fixed </fix-alert> incompatibility with <strong>Windows PowerShell</strong> when reaching the variable <code>IsWindows</code>, which is available only on PowerShell</dd>

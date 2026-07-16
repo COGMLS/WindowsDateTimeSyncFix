@@ -17,6 +17,8 @@ This file contains the project information, including implementations, planned f
 - Final tests and fixes to experimental components
 - Fix parameter `-Tries` uses incompatible datatype with Windows PowerShell (`uint`)
 - Fix parameter `-Tries` not working
+- Fix worldtimeapi.org time server communication, using a new time server (`timeapi.io`)
+- Changed server and api URLs variables' names for better understanding
 
 ### Ongoing Implementations/Tests:
 
@@ -24,6 +26,8 @@ This file contains the project information, including implementations, planned f
 - Fix **Windows PowerShell** request inconsistency
 
 ### Future Implementations/Tests:
+
+- Add support for more than one time server
 
 ### Known Bugs:
 
@@ -36,6 +40,7 @@ This file contains the project information, including implementations, planned f
 | 5 | Parameter `-Tries` uses incompatible datatype with Windows PowerShell (`uint`) | ~~The use of `uint` datatype breaks the compatibility with Windows PowerShell, use the PowerShell to avoid script fail~~ | **FIXED** |
 | 6 | On Windows PowerShell, there is a incompatibility issue caused by `$IsWindows` PowerShell variable. | ~~To avoid this incompatibility, use the PowerShell instead the Windows PowerShell version~~ | **FIXED** |
 | 7 | Request from server is not working as expected on **Windows PowerShell** | On PowerShell is working as expected | Not fixed |
+| 8 | ~~`worldtimeapi.org` time server is down. Need use a new one.~~ |  | **FIXED** |
 
 ### Deprecated Features:
 
