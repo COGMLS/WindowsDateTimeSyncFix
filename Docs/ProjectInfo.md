@@ -40,7 +40,7 @@ This file contains the project information, including implementations, planned f
 | 5 | Parameter `-Tries` uses incompatible datatype with Windows PowerShell (`uint`) | ~~The use of `uint` datatype breaks the compatibility with Windows PowerShell, use the PowerShell to avoid script fail~~ | **FIXED** |
 | 6 | On Windows PowerShell, there is a incompatibility issue caused by `$IsWindows` PowerShell variable. | ~~To avoid this incompatibility, use the PowerShell instead the Windows PowerShell version~~ | **FIXED** |
 | 7 | Request from server is not working as expected on **Windows PowerShell** | On PowerShell is working as expected | Not fixed |
-| 8 | ~~`worldtimeapi.org` time server is down. Need use a new one.~~ |  | **FIXED** |
+| 8 | `worldtimeapi.org` time server is down. Need use a new one. |  | **FIXED** |
 
 ### Deprecated Features:
 
