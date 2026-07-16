@@ -2,9 +2,9 @@
  # Windows Date and Time Sync script for PowerShell
  # ---------------------------------------------------
  # Author: Matheus Lopes Silvati
- # Date: 2025/10/29
+ # Date: 2026/07/15
  # ------------------------------------
- # Version: 1.0.2
+ # Version: 1.0.3
  # ------------------------------------
  # Obs: N/A
 ##########################################################>
@@ -127,7 +127,7 @@ param
 $__ScriptVersionNumber__ = @{
     "Major"     = 1;
     "Minor"     = 0;
-    "Revision"  = 2
+    "Revision"  = 3
 }
 
 #
@@ -150,8 +150,8 @@ $__ScriptVersionNumber__ = @{
 # Script Global Variables:
 #
 
-$ServerWorldTimeUrl = "worldtimeapi.org"
-$ServerApiUrl = "/api/timezone/Etc/UTC"
+$ServerWorldTimeUrl = "https://timeapi.io"
+$ServerApiUrl = "/api/v1/time/current/utc"
 
 #
 # Script Classes:
@@ -235,7 +235,7 @@ function getDateTimeInfo
         $request = Invoke-WebRequest -Uri $finalUrl -ConnectionTimeoutSeconds 30
         $convertedJson = ConvertFrom-Json $request
 
-        $utcDt = ($convertedJson.utc_datetime).ToUniversalTime()
+        $utcDt = ($convertedJson.utc_time).ToUniversalTime()
 
         if ($request.StatusCode -eq 200)
         {
